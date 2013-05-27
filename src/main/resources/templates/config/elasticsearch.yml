@@ -1,0 +1,77 @@
+# See <http://elasticsearch.org/guide/reference/setup/configuration.html>
+# for information on supported formats and syntax for the configuration file.
+
+
+################################### Cluster ###################################
+
+cluster.name: ${cluster.ame}
+
+
+#################################### Node #####################################
+
+node.name: ${node.name}
+node.master: ${node.master}
+node.data: ${node.data}
+
+#################################### Index ####################################
+
+index.number_of_shards: ${cluster.shardCount}
+index.number_of_replicas: ${cluster.replicaCount}
+
+#################################### Paths ####################################
+
+path.conf: ${node.path.conf}
+path.data: ${node.path.data}
+path.work: ${node.path.work}
+path.logs: ${node.path.logs}
+path.plugins: ${node.path.plugins}
+
+################################### Memory ####################################
+
+# ElasticSearch performs poorly when JVM starts swapping: you should ensure that
+# it _never_ swaps.
+#
+# Set this property to true to lock the memory:
+#
+bootstrap.mlockall: ${node.lockAllMemory}
+
+# Make sure that the ES_MIN_MEM and ES_MAX_MEM environment variables are set
+# to the same value, and that the machine has enough memory to allocate
+# for ElasticSearch, leaving enough memory for the operating system itself.
+#
+# You should also make sure that the ElasticSearch process is allowed to lock
+# the memory, eg. by using `ulimit -l unlimited`.
+
+############################## Network And HTTP ###############################
+
+transport.tcp.port: ${node.tcp.port}
+http.port: ${node.http.port}
+
+################################## Slow Log ##################################
+
+# Shard level query and fetch threshold logging.
+
+index.search.slowlog.threshold.query.warn: 10s
+index.search.slowlog.threshold.query.info: 5s
+index.search.slowlog.threshold.query.debug: 2s
+index.search.slowlog.threshold.query.trace: 500ms
+
+index.search.slowlog.threshold.fetch.warn: 1s
+index.search.slowlog.threshold.fetch.info: 800ms
+index.search.slowlog.threshold.fetch.debug: 500ms
+index.search.slowlog.threshold.fetch.trace: 200ms
+
+index.indexing.slowlog.threshold.index.warn: 10s
+index.indexing.slowlog.threshold.index.info: 5s
+index.indexing.slowlog.threshold.index.debug: 2s
+index.indexing.slowlog.threshold.index.trace: 500ms
+
+################################## GC Logging ################################
+
+monitor.jvm.gc.ParNew.warn: 1000ms
+monitor.jvm.gc.ParNew.info: 700ms
+monitor.jvm.gc.ParNew.debug: 400ms
+
+monitor.jvm.gc.ConcurrentMarkSweep.warn: 10s
+monitor.jvm.gc.ConcurrentMarkSweep.info: 5s
+monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
