@@ -108,8 +108,8 @@
 					<property name="lockAllMemory" value="true" />
 					<property name="master" value="false" />
 					<property name="data" value="false" />
-					<property name="httpPort" value="9200" />
-					<property name="tcpPort" value="9300" />
+					<property name="httpPort" value="9201" />
+					<property name="tcpPort" value="9301" />
 					<property name="confPath">
 						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 							<property name="root" ref="bnfDataRoot" />
