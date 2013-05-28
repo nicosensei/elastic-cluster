@@ -40,9 +40,9 @@
 						<property name="lockAllMemory" value="true" />
 						<property name="master" value="true" />
 						<property name="data" value="false" />
-						<property name="http.port" value="9200" />
-						<property name="tcp.port" value="9300" />
-						<property name="path.pidFile">
+						<property name="httpPort" value="9200" />
+						<property name="tcpPort" value="9300" />
+						<property name="pidFile">
 						  <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 						      <property name="root" ref="bnfDataRoot"/>
 						      <property name="path" value="acheron1.pid" />
@@ -92,9 +92,9 @@
                         <property name="lockAllMemory" value="true" />
                         <property name="master" value="false" />
                         <property name="data" value="false" />
-                        <property name="http.port" value="9200" />
-                        <property name="tcp.port" value="9300" />
-                        <property name="path.pidFile">
+                        <property name="httpPort" value="9200" />
+                        <property name="tcpPort" value="9300" />
+                        <property name="pidFile">
                           <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
                               <property name="root" ref="bnfDataRoot"/>
                               <property name="path" value="menelas1.pid" />
@@ -144,9 +144,9 @@
                         <property name="lockAllMemory" value="true" />
                         <property name="master" value="false" />
                         <property name="data" value="true" />
-                        <property name="http.port" value="9200" />
-                        <property name="tcp.port" value="9300" />
-                        <property name="path.pidFile">
+                        <property name="httpPort" value="9200" />
+                        <property name="tcpPort" value="9300" />
+                        <property name="pidFile">
                           <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
                               <property name="root" ref="bnfDataRoot"/>
                               <property name="path" value="menelas2.pid" />
@@ -196,9 +196,9 @@
                         <property name="lockAllMemory" value="true" />
                         <property name="master" value="false" />
                         <property name="data" value="true" />
-                        <property name="http.port" value="9200" />
-                        <property name="tcp.port" value="9300" />
-                        <property name="path.pidFile">
+                        <property name="httpPort" value="9200" />
+                        <property name="tcpPort" value="9300" />
+                        <property name="pidFile">
                           <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
                               <property name="root" ref="bnfDataRoot"/>
                               <property name="path" value="menelas3.pid" />

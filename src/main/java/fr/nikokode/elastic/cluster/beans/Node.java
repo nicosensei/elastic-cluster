@@ -12,6 +12,11 @@ package fr.nikokode.elastic.cluster.beans;
 public class Node {
 	
 	/**
+	 * The node name.
+	 */
+	private String name;
+	
+	/**
 	 * The remote host on which the node will be deployed.
 	 */
 	private String host;
@@ -90,6 +95,20 @@ public class Node {
 	 * Path to the folder storing plugins.
 	 */
 	private FilePath pluginsPath;
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	/**
 	 * @return the host
