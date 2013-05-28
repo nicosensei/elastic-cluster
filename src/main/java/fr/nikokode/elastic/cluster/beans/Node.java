@@ -3,13 +3,23 @@
  */
 package fr.nikokode.elastic.cluster.beans;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import fr.nikokode.elastic.cluster.SubstitutionSource;
+
 /**
  * A Spring bean representing an ElasticSearch node setup.
  * 
  * @author ngiraud
  *
  */
-public class Node {
+public class Node implements SubstitutionSource {
+	
+	/**
+	 * The node id, used to distinguish nodes (that can possibly reside on same hosts).
+	 */
+	private String id;
 	
 	/**
 	 * The node name.
@@ -25,6 +35,11 @@ public class Node {
 	 * The user to connect as on the remote host.
 	 */
 	private String user;
+	
+	/**
+	 * The directory where cluster management scripts reside.
+	 */
+	private FilePath scriptsPath;
 	
 	/**
 	 * The base ElasticSearch directory (where the binary package was extracted).
@@ -67,11 +82,6 @@ public class Node {
 	private int tcpPort;
 	
 	/**
-	 * Path to the process ID file.
-	 */
-	private FilePath pidFile;
-	
-	/**
 	 * Path to the folder storing configuration files.
 	 */
 	private FilePath confPath;
@@ -95,6 +105,25 @@ public class Node {
 	 * Path to the folder storing plugins.
 	 */
 	private FilePath pluginsPath;
+	
+	/**
+	 * If set to true, will generate head plugin installation command
+	 */
+	private boolean installHeadPlugin;
+
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	/**
 	 * @return the name
@@ -136,6 +165,20 @@ public class Node {
 	 */
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the scriptsPath
+	 */
+	public FilePath getScriptsPath() {
+		return scriptsPath;
+	}
+
+	/**
+	 * @param scriptsPath the scriptsPath to set
+	 */
+	public void setScriptsPath(FilePath scriptsPath) {
+		this.scriptsPath = scriptsPath;
 	}
 
 	/**
@@ -251,20 +294,6 @@ public class Node {
 	}
 
 	/**
-	 * @return the pidFile
-	 */
-	public FilePath getPidFile() {
-		return pidFile;
-	}
-
-	/**
-	 * @param pidFile the pidFile to set
-	 */
-	public void setPidFile(FilePath pidFile) {
-		this.pidFile = pidFile;
-	}
-
-	/**
 	 * @return the confPath
 	 */
 	public FilePath getConfPath() {
@@ -334,4 +363,44 @@ public class Node {
 		this.pluginsPath = pluginsPath;
 	}
 
+	/**
+	 * @return the installHeadPlugin
+	 */
+	public boolean isInstallHeadPlugin() {
+		return installHeadPlugin;
+	}
+
+	/**
+	 * @param installHeadPlugin the installHeadPlugin to set
+	 */
+	public void setInstallHeadPlugin(boolean installHeadPlugin) {
+		this.installHeadPlugin = installHeadPlugin;
+	}
+
+	@Override
+	public Map<String, String> getPropertyMap() {
+		HashMap<String, String> props = new HashMap<>();
+		String namePrefix = Node.class.getSimpleName().toLowerCase() + ".";
+		props.put(namePrefix + "id", this.id);
+		props.put(namePrefix + "name", this.name);
+		props.put(namePrefix + "host", this.host);
+		props.put(namePrefix + "user", this.user);
+		props.put(namePrefix + "scriptsPath", this.scriptsPath.resolvePath());
+		props.put(namePrefix + "elasticSearchHome", this.elasticSearchHome.resolvePath());
+		props.put(namePrefix + "javaHome", this.javaHome.resolvePath());
+		props.put(namePrefix + "heapSize", this.heapSize);
+		props.put(namePrefix + "lockAllMemory", Boolean.toString(this.lockAllMemory));
+		props.put(namePrefix + "master", Boolean.toString(this.master));
+		props.put(namePrefix + "data", Boolean.toString(this.data));
+		props.put(namePrefix + "httpPort", Integer.toString(this.httpPort));
+		props.put(namePrefix + "tcpPort", Integer.toString(this.tcpPort));
+		props.put(namePrefix + "confPath", this.confPath.resolvePath());
+		props.put(namePrefix + "dataPath", this.dataPath.resolvePath());
+		props.put(namePrefix + "workPath", this.workPath.resolvePath());
+		props.put(namePrefix + "logsPath", this.logsPath.resolvePath());
+		props.put(namePrefix + "pluginsPath", this.pluginsPath.resolvePath());
+		props.put(namePrefix + "installHeadPlugin", Boolean.toString(this.installHeadPlugin));
+		return props;
+	}
+	
 }

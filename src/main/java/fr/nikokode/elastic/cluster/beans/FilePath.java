@@ -3,6 +3,8 @@
  */
 package fr.nikokode.elastic.cluster.beans;
 
+import java.nio.file.Paths;
+
 
 /**
  * A Spring bean representing a file path.
@@ -48,6 +50,13 @@ public class FilePath {
 	 */
 	public void setPath(String path) {
 		this.path = path;
+	}
+	
+	public String resolvePath() {
+		if (root == null) {
+			return Paths.get("/").resolve(this.path).toAbsolutePath().toString();
+		}
+		return Paths.get(root.resolvePath()).resolve(this.path).toAbsolutePath().toString();
 	}
 
 }

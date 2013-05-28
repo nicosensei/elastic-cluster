@@ -4,7 +4,7 @@
 
 ################################### Cluster ###################################
 
-cluster.name: ${cluster.ame}
+cluster.name: ${cluster.name}
 
 
 #################################### Node #####################################
@@ -20,11 +20,11 @@ index.number_of_replicas: ${cluster.replicaCount}
 
 #################################### Paths ####################################
 
-path.conf: ${node.path.conf}
-path.data: ${node.path.data}
-path.work: ${node.path.work}
-path.logs: ${node.path.logs}
-path.plugins: ${node.path.plugins}
+path.conf: ${node.confPath}
+path.data: ${node.dataPath}
+path.work: ${node.workPath}
+path.logs: ${node.logsPath}
+path.plugins: ${node.pluginsPath}
 
 ################################### Memory ####################################
 
@@ -44,8 +44,8 @@ bootstrap.mlockall: ${node.lockAllMemory}
 
 ############################## Network And HTTP ###############################
 
-transport.tcp.port: ${node.tcp.port}
-http.port: ${node.http.port}
+transport.tcp.port: ${node.tcpPort}
+http.port: ${node.httpPort}
 
 ################################## Slow Log ##################################
 

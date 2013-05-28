@@ -3,7 +3,11 @@
  */
 package fr.nikokode.elastic.cluster.beans;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import fr.nikokode.elastic.cluster.SubstitutionSource;
 
 /**
  * A Spring bean representing an ElasticSearch cluster setup.
@@ -11,7 +15,7 @@ import java.util.Map;
  * @author ngiraud
  *
  */
-public class Cluster {
+public class Cluster implements SubstitutionSource {
 	
 	/**
 	 * The cluster name.
@@ -34,9 +38,9 @@ public class Cluster {
     private int shutdownWaitInSeconds;
     
     /**
-     * The cluster nodes, the key being the startup/shutdown order.
+     * The cluster nodes.
      */
-    private Map<Integer, Node> nodes;
+    private List<Node> nodes;
 
 	/**
 	 * @return the name
@@ -97,16 +101,26 @@ public class Cluster {
 	/**
 	 * @return the nodes
 	 */
-	public Map<Integer, Node> getNodes() {
+	public List<Node> getNodes() {
 		return nodes;
 	}
 
 	/**
 	 * @param nodes the nodes to set
 	 */
-	public void setNodes(Map<Integer, Node> nodes) {
+	public void setNodes(List<Node> nodes) {
 		this.nodes = nodes;
 	}
-    
+
+	@Override
+	public Map<String, String> getPropertyMap() {
+		HashMap<String, String> props = new HashMap<>();
+		String namePrefix = Cluster.class.getSimpleName().toLowerCase() + ".";
+		props.put(namePrefix + "name", this.name);
+		props.put(namePrefix + "shardCount", Integer.toString(this.shardCount));
+		props.put(namePrefix + "replicaCount", Integer.toString(this.replicaCount));
+		props.put(namePrefix + "shutdownWaitInSeconds", Integer.toString(this.shutdownWaitInSeconds));
+		return props;
+	}
 
 }

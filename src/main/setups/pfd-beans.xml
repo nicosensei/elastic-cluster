@@ -11,232 +11,232 @@
 	<bean id="bnfDataRoot" class="fr.nikokode.elastic.cluster.beans.FilePath">
 		<property name="path" value="/bnf/dlwebdata/elasticsearch" />
 	</bean>
-	
+
+	<bean id="scriptsDir" class="fr.nikokode.elastic.cluster.beans.FilePath">
+		<property name="path" value="/home/dlweb/elasticsearch/wayback" />
+	</bean>
+
 	<bean id="javaHome" class="fr.nikokode.elastic.cluster.beans.FilePath">
-        <property name="path" value="/home/dlweb/jdk1.7.0_21" />
-    </bean>
-    
-    <bean id="esHome" class="fr.nikokode.elastic.cluster.beans.FilePath">
-        <property name="path" value="/home/dlweb/elasticsearch-0.90.0.RC2" />
-    </bean>
+		<property name="path" value="/home/dlweb/jdk1.7.0_21" />
+	</bean>
+
+	<bean id="esHome" class="fr.nikokode.elastic.cluster.beans.FilePath">
+		<property name="path"
+			value="/home/dlweb/elasticsearch/elasticsearch-0.90.0.RC2" />
+	</bean>
+
+    <!-- Deployment information-->
+	<bean class="fr.nikokode.elastic.cluster.beans.Deploy">
+		<property name="localOutputPath">
+			<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+				<property name="path" value="/home/ngiraud/git/elastic-cluster/target" />
+			</bean>
+		</property>
+		<property name="esZipFile">
+            <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+                <property name="path" value="/media/data/warehouse/search/elasticsearch-0.90.0.RC2.zip" />
+            </bean>
+        </property>
+        <property name="esVersionName" value="elasticsearch-0.90.0.RC2" />
+	</bean>
 
 	<bean class="fr.nikokode.elastic.cluster.beans.Cluster">
-		<property name="name" value="webarchiving" />
+		<property name="name" value="wayback" />
 		<property name="shardCount" value="10" />
 		<property name="replicaCount" value="2" />
 		<property name="shutdownWaitInSeconds" value="10" />
 
 		<property name="nodes">
-			<map>
-			    <!-- Master coordinator node on acheron1 -->
-				<entry key="1">
-					<bean class="fr.nikokode.elastic.cluster.beans.Node">
-						<property name="host" value="acheron1.bnf.fr" />
-						<property name="user" value="dlweb" />
-						<property name="name" value="Emperor Palpatine" />
-						<property name="elasticSearchHome" ref="esHome"/>
-						<property name="javaHome" ref="javaHome" />
-						<property name="heapSize" value="512m" />
-						<property name="lockAllMemory" value="true" />
-						<property name="master" value="true" />
-						<property name="data" value="false" />
-						<property name="httpPort" value="9200" />
-						<property name="tcpPort" value="9300" />
-						<property name="pidFile">
-						  <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-						      <property name="root" ref="bnfDataRoot"/>
-						      <property name="path" value="acheron1.pid" />
-						  </bean>
-						</property>
-						<property name="confPath">
-						  <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="acheron1/conf" />
-                          </bean>
-                        </property>
-                        <property name="dataPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="acheron1/data" />
-                          </bean>
-                        </property>
-						<property name="workPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="acheron1/work" />
-                          </bean>
-                        </property>
-                        <property name="logsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="acheron1/logs" />
-                          </bean>
-                        </property>
-                        <property name="pluginsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="acheron1/plugins" />
-                          </bean>
-                        </property>
-					</bean>
-				</entry>
+			<list>
+				<!-- Master coordinator node on menelas1 -->
+				<bean class="fr.nikokode.elastic.cluster.beans.Node">
+					<property name="id" value="master" />
+					<property name="host" value="menelas1.bnf.fr" />
+					<property name="user" value="dlweb" />
+					<property name="name" value="Emperor Palpatine" />
+					<property name="elasticSearchHome" ref="esHome" />
+					<property name="javaHome" ref="javaHome" />
+					<property name="scriptsPath" ref="scriptsDir" />
+					<property name="heapSize" value="512m" />
+					<property name="lockAllMemory" value="true" />
+					<property name="master" value="true" />
+					<property name="data" value="false" />
+					<property name="httpPort" value="9200" />
+					<property name="tcpPort" value="9300" />
+					<property name="confPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="master/conf" />
+						</bean>
+					</property>
+					<property name="dataPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="master/data" />
+						</bean>
+					</property>
+					<property name="workPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="master/work" />
+						</bean>
+					</property>
+					<property name="logsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="master/logs" />
+						</bean>
+					</property>
+					<property name="pluginsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="master/plugins" />
+						</bean>
+					</property>
+					<property name="installHeadPlugin" value="true" />
+				</bean>
 				<!-- Load-balancer node on menelas1 -->
-				<entry key="1">
-                    <bean class="fr.nikokode.elastic.cluster.beans.Node">
-                        <property name="host" value="menelas1.bnf.fr" />
-                        <property name="user" value="dlweb" />
-                        <property name="name" value="Darth Vader" />
-                        <property name="elasticSearchHome" ref="esHome"/>
-                        <property name="javaHome" ref="javaHome" />
-                        <property name="heapSize" value="1024m" />
-                        <property name="lockAllMemory" value="true" />
-                        <property name="master" value="false" />
-                        <property name="data" value="false" />
-                        <property name="httpPort" value="9200" />
-                        <property name="tcpPort" value="9300" />
-                        <property name="pidFile">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas1.pid" />
-                          </bean>
-                        </property>
-                        <property name="confPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas1/conf" />
-                          </bean>
-                        </property>
-                        <property name="dataPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas1/data" />
-                          </bean>
-                        </property>
-                        <property name="workPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas1/work" />
-                          </bean>
-                        </property>
-                        <property name="logsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas1/logs" />
-                          </bean>
-                        </property>
-                        <property name="pluginsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas1/plugins" />
-                          </bean>
-                        </property>
-                    </bean>
-                </entry>
-                <!-- Data node on menelas2 (1 out of 2) -->
-                <entry key="1">
-                    <bean class="fr.nikokode.elastic.cluster.beans.Node">
-                        <property name="host" value="menelas2.bnf.fr" />
-                        <property name="user" value="dlweb" />
-                        <property name="name" value="Darth Vader" />
-                        <property name="elasticSearchHome" ref="esHome"/>
-                        <property name="javaHome" ref="javaHome" />
-                        <property name="heapSize" value="1024m" />
-                        <property name="lockAllMemory" value="true" />
-                        <property name="master" value="false" />
-                        <property name="data" value="true" />
-                        <property name="httpPort" value="9200" />
-                        <property name="tcpPort" value="9300" />
-                        <property name="pidFile">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas2.pid" />
-                          </bean>
-                        </property>
-                        <property name="confPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas2/conf" />
-                          </bean>
-                        </property>
-                        <property name="dataPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas2/data" />
-                          </bean>
-                        </property>
-                        <property name="workPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas2/work" />
-                          </bean>
-                        </property>
-                        <property name="logsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas2/logs" />
-                          </bean>
-                        </property>
-                        <property name="pluginsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas2/plugins" />
-                          </bean>
-                        </property>
-                    </bean>
-                </entry>
-                <!-- Data node on menelas3 (2 out of 2) -->
-                <entry key="1">
-                    <bean class="fr.nikokode.elastic.cluster.beans.Node">
-                        <property name="host" value="menelas3.bnf.fr" />
-                        <property name="user" value="dlweb" />
-                        <property name="name" value="Darth Vader" />
-                        <property name="elasticSearchHome" ref="esHome"/>
-                        <property name="javaHome" ref="javaHome" />
-                        <property name="heapSize" value="1024m" />
-                        <property name="lockAllMemory" value="true" />
-                        <property name="master" value="false" />
-                        <property name="data" value="true" />
-                        <property name="httpPort" value="9200" />
-                        <property name="tcpPort" value="9300" />
-                        <property name="pidFile">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas3.pid" />
-                          </bean>
-                        </property>
-                        <property name="confPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas3/conf" />
-                          </bean>
-                        </property>
-                        <property name="dataPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas3/data" />
-                          </bean>
-                        </property>
-                        <property name="workPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas3/work" />
-                          </bean>
-                        </property>
-                        <property name="logsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas3/logs" />
-                          </bean>
-                        </property>
-                        <property name="pluginsPath">
-                          <bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-                              <property name="root" ref="bnfDataRoot"/>
-                              <property name="path" value="menelas3/plugins" />
-                          </bean>
-                        </property>
-                    </bean>
-                </entry>
-			</map>
+				<bean class="fr.nikokode.elastic.cluster.beans.Node">
+					<property name="id" value="loadBalancer" />
+					<property name="host" value="menelas1.bnf.fr" />
+					<property name="user" value="dlweb" />
+					<property name="name" value="Darth Vader" />
+					<property name="scriptsPath" ref="scriptsDir" />
+					<property name="elasticSearchHome" ref="esHome" />
+					<property name="javaHome" ref="javaHome" />
+					<property name="heapSize" value="1024m" />
+					<property name="lockAllMemory" value="true" />
+					<property name="master" value="false" />
+					<property name="data" value="false" />
+					<property name="httpPort" value="9200" />
+					<property name="tcpPort" value="9300" />
+					<property name="confPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="loadBalancer/conf" />
+						</bean>
+					</property>
+					<property name="dataPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="loadBalancer/data" />
+						</bean>
+					</property>
+					<property name="workPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="loadBalancer/work" />
+						</bean>
+					</property>
+					<property name="logsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="loadBalancer/logs" />
+						</bean>
+					</property>
+					<property name="pluginsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="loadBalancer/plugins" />
+						</bean>
+					</property>
+					<property name="installHeadPlugin" value="false" />
+				</bean>
+				<!-- Data node on menelas2 (1 out of 2) -->
+				<bean class="fr.nikokode.elastic.cluster.beans.Node">
+					<property name="id" value="data1" />
+					<property name="host" value="menelas2.bnf.fr" />
+					<property name="user" value="dlweb" />
+					<property name="name" value="Death Star" />
+					<property name="scriptsPath" ref="scriptsDir" />
+					<property name="elasticSearchHome" ref="esHome" />
+					<property name="javaHome" ref="javaHome" />
+					<property name="heapSize" value="1024m" />
+					<property name="lockAllMemory" value="true" />
+					<property name="master" value="false" />
+					<property name="data" value="true" />
+					<property name="httpPort" value="9200" />
+					<property name="tcpPort" value="9300" />
+					<property name="confPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data1/conf" />
+						</bean>
+					</property>
+					<property name="dataPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data1/data" />
+						</bean>
+					</property>
+					<property name="workPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data1/work" />
+						</bean>
+					</property>
+					<property name="logsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data1/logs" />
+						</bean>
+					</property>
+					<property name="pluginsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data1/plugins" />
+						</bean>
+					</property>
+					<property name="installHeadPlugin" value="false" />
+				</bean>
+				<!-- Data node on menelas3 (2 out of 2) -->
+				<bean class="fr.nikokode.elastic.cluster.beans.Node">
+					<property name="id" value="data2" />
+					<property name="host" value="menelas3.bnf.fr" />
+					<property name="user" value="dlweb" />
+					<property name="name" value="Tie Fighter" />
+					<property name="scriptsPath" ref="scriptsDir" />
+					<property name="elasticSearchHome" ref="esHome" />
+					<property name="javaHome" ref="javaHome" />
+					<property name="heapSize" value="1024m" />
+					<property name="lockAllMemory" value="true" />
+					<property name="master" value="false" />
+					<property name="data" value="true" />
+					<property name="httpPort" value="9200" />
+					<property name="tcpPort" value="9300" />
+					<property name="confPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data2/conf" />
+						</bean>
+					</property>
+					<property name="dataPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data2/data" />
+						</bean>
+					</property>
+					<property name="workPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data2/work" />
+						</bean>
+					</property>
+					<property name="logsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data2/logs" />
+						</bean>
+					</property>
+					<property name="pluginsPath">
+						<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+							<property name="root" ref="bnfDataRoot" />
+							<property name="path" value="data2/plugins" />
+						</bean>
+					</property>
+					<property name="installHeadPlugin" value="false" />
+				</bean>
+			</list>
 		</property>
 
 	</bean>

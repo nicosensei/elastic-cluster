@@ -1,15 +1,13 @@
 #!/bin/bash
 
-PID_FILE="${node.path.pidFile}"
-
-WORK_DIR="$(dirname $PID_FILE)"
-if [ ! -d $WORK_DIR ]; then mkdir -p $WORK_DIR; fi
+PID_FILE="${node.scriptsPath}/${node.id}.pid"
 
 ES_HOME="${node.elasticSearchHome}"
 
 export JAVA_HOME="${node.javaHome}"
 #export ES_CLASSPATH=""
 export ES_HEAP_SIZE="${node.heapSize}"
+export ES_JAVA_OPTS="-Des.conf.path=${node.confPath}"
 
 RETVAL=$?
 
@@ -25,9 +23,9 @@ start() {
 
 stop() {
     if [  -f $PID_FILE  ]; then
-		curl -XPOST 'http://localhost:${node.http.port}/_cluster/nodes/_local/_shutdown'
+		curl -XPOST 'http://localhost:${node.httpPort}/_cluster/nodes/_local/_shutdown'
 		echo -e "\nWaiting for ElasticSearch to stop..."
-		sleep ${cluster.shutdown.waitInSeconds}
+		sleep ${cluster.shutdownWaitInSeconds}
 		if [  -f $PID_FILE  ]; then
 			echo -e "ElasticSearch did not stop properly: pid `cat $PID_FILE`"
 		fi		
@@ -35,12 +33,6 @@ stop() {
 		echo -e "ElasticSearch is not running."
     fi
     return 1
-}
-
-cleanup() {
-    echo $"Cleaning up..."
-    rm -rf ${node.path.work}
-    echo $"... done!"
 }
 
 status() {
@@ -52,9 +44,23 @@ status() {
     return 1
 }
 
+plugins() {
+    if ${node.installHeadPlugin} ; then
+        $ES_HOME/bin/plugin -install mobz/elasticsearch-head
+    fi    
+}
+
+destroy() {
+    rm -rvf ${node.confPath}
+    rm -rvf ${node.workPath}
+    rm -rvf ${node.dataPath}
+    rm -rvf ${node.logsPath}
+    rm -rvf ${node.pluginsPath}
+    rm -rvf ${node.scriptsPath}
+}
+
 case "$1" in
  start)
-#     cleanup;
      start;
      ;;
  stop)
@@ -62,14 +68,20 @@ case "$1" in
      ;;
  restart)
      stop;
-     cleanup;
      start;
      ;;
  status)
     status;
     ;;
+ destroy)
+    stop;
+    destroy;
+    ;;
+ plugins)
+    plugins;
+    ;;
  *)
-     echo $"Usage: $0 {start|stop|restart|status}"
+     echo $"Usage: $0 {start|stop|restart|status|plugins|destroy}"
      exit 1
      ;;
 esac
