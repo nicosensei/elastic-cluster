@@ -29,10 +29,10 @@ The build generates an executable JAR :
 Setting up a cluster configuration
 -------------
 
-The JAR file contains a complete setup example with plenty of comments, 
+The JAR file contains a [complete setup example](https://github.com/nicosensei/elastic-cluster/blob/master/src/main/resources/setups/example-beans.xml "example cluster setup")with plenty of comments, 
 that will walk you through the tool configuration:
 
-    [src/main/resources/setups/example-beans.xml](https://github.com/nicosensei/elastic-cluster/blob/master/src/main/resources/setups/example-beans.xml "example cluster setup")    
+    src/main/resources/setups/example-beans.xml    
 
 That's your starting point.
 
