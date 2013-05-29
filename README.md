@@ -15,7 +15,7 @@ Provided you have a functional Maven 3 installed on your system,
 building the tool is as simple as running 'mvn clean package' in the 
 root folder of your local Git repository.
 
-Let's start with an example :
+Let's start with an example, and please bear with the "Star Wars fanboy" tone of it ;-p:
 
     obiwan@coruscant:~ cd /home/obiwan/git/
     obiwan@coruscant:~ git clone https://github.com/nicosensei/elastic-cluster.git 
@@ -35,8 +35,6 @@ that will walk you through the tool configuration:
     src/main/resources/setups/example-beans.xml
 
 That's your starting point.
-
-And please bear with the "Star Wars fanboy" tone of the sample ;-p
 
 File generation
 -------------
