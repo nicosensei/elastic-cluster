@@ -12,7 +12,8 @@ public enum Template {
 	nodeConfig("templates/config/elasticsearch.yml"),
 	nodeLogConfig("templates/config/logging.yml"),
 	nodeMgmtScript("templates/bash/node.sh"),
-	nodeDeployScript("templates/bash/deployNode.sh");
+	nodeDeployScript("templates/bash/deployNode.sh"),
+	setupHostScript("templates/bash/setupHost.sh");
 	
 	private final String relativePath;
 

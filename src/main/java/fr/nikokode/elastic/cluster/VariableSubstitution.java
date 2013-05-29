@@ -3,6 +3,8 @@
  */
 package fr.nikokode.elastic.cluster;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -30,20 +32,10 @@ public class VariableSubstitution {
 		this.propertyMap.putAll(propertyMap);
 	}
 	
-	public void removeProperties(Map<String, String> propertyMap) {
-		for (String key : propertyMap.keySet()) {
-			this.propertyMap.remove(key);
-		}
-	}
-	
 	public void putProperty(String key, String value) {
 		this.propertyMap.put(key, value);
 	}
 	
-	public void removeProperty(String key) {
-		this.propertyMap.remove(key);
-	}
-
 	/**
 	 * Substitutes a variable declared in the form of "${varName}" in the given text.
 	 * @param text the text to substitute.
@@ -65,6 +57,22 @@ public class VariableSubstitution {
 		}
 		m.appendTail(result);
 		return result.toString();
+	}
+
+	@Override
+	public String toString() {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		try {
+			pw.println(VariableSubstitution.class.getSimpleName() + " [");
+			for (String key : propertyMap.keySet()) {
+				pw.println("\t" + key + " = " + propertyMap.get(key));
+			}
+			pw.println("]");
+		} finally {
+			pw.close();
+		}
+		return sw.toString();
 	}
 
 }

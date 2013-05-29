@@ -2,12 +2,12 @@
 
 PID_FILE="${node.scriptsPath}/${node.id}.pid"
 
-ES_HOME="${node.elasticSearchHome}"
+ES_HOME="${host.elasticSearchHome}"
 
-export JAVA_HOME="${node.javaHome}"
+export JAVA_HOME="${host.javaHome}"
 #export ES_CLASSPATH=""
 export ES_HEAP_SIZE="${node.heapSize}"
-export ES_JAVA_OPTS="-Des.conf.path=${node.confPath}"
+export ES_JAVA_OPTS="-Des.path.conf=${node.confPath}"
 
 RETVAL=$?
 
@@ -46,7 +46,7 @@ status() {
 
 plugins() {
     if ${node.installHeadPlugin} ; then
-        $ES_HOME/bin/plugin -install mobz/elasticsearch-head
+        $ES_HOME/bin/plugin -install mobz/elasticsearch-head -Des.path.conf=${node.confPath}
     fi    
 }
 
@@ -58,6 +58,10 @@ destroy() {
     rm -rvf ${node.pluginsPath}
     rm -rvf ${node.scriptsPath}
 }
+
+echo -e "\n################################################################################"
+echo -e "Executing command '"$1"' on node ${node.id} (${host.user}@${host.name})"
+echo -e "################################################################################\n"
 
 case "$1" in
  start)

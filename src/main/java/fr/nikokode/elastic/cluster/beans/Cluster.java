@@ -38,11 +38,26 @@ public class Cluster implements SubstitutionSource {
     private int shutdownWaitInSeconds;
     
     /**
-     * The cluster nodes.
-     */
-    private List<Node> nodes;
-
+	 * Path to the local output folder
+	 */
+	private FilePath localOutputPath;
+	
 	/**
+	 * Path to the ElasticSearch distribution package (zip file expected).
+	 */
+	private FilePath esZipFile;
+	
+	/**
+	 * The name of the root folder in the ES zip file.
+	 */
+	private String esVersionName;
+	
+	/**
+	 * The deployment hosts.
+	 */
+	private List<Host> hosts;
+    
+    /**
 	 * @return the name
 	 */
 	public String getName() {
@@ -99,17 +114,59 @@ public class Cluster implements SubstitutionSource {
 	}
 
 	/**
-	 * @return the nodes
+	 * @return the localOutputPath
 	 */
-	public List<Node> getNodes() {
-		return nodes;
+	public FilePath getLocalOutputPath() {
+		return localOutputPath;
 	}
 
 	/**
-	 * @param nodes the nodes to set
+	 * @param localOutputPath the localOutputPath to set
 	 */
-	public void setNodes(List<Node> nodes) {
-		this.nodes = nodes;
+	public void setLocalOutputPath(FilePath localOutputPath) {
+		this.localOutputPath = localOutputPath;
+	}
+
+	/**
+	 * @return the esZipFile
+	 */
+	public FilePath getEsZipFile() {
+		return esZipFile;
+	}
+
+	/**
+	 * @param esZipFile the esZipFile to set
+	 */
+	public void setEsZipFile(FilePath esZipFile) {
+		this.esZipFile = esZipFile;
+	}
+
+	/**
+	 * @return the esVersionName
+	 */
+	public String getEsVersionName() {
+		return esVersionName;
+	}
+
+	/**
+	 * @param esVersionName the esVersionName to set
+	 */
+	public void setEsVersionName(String esVersionName) {
+		this.esVersionName = esVersionName;
+	}
+
+	/**
+	 * @return the hosts
+	 */
+	public List<Host> getHosts() {
+		return hosts;
+	}
+
+	/**
+	 * @param hosts the hosts to set
+	 */
+	public void setHosts(List<Host> hosts) {
+		this.hosts = hosts;
 	}
 
 	@Override
@@ -120,6 +177,9 @@ public class Cluster implements SubstitutionSource {
 		props.put(namePrefix + "shardCount", Integer.toString(this.shardCount));
 		props.put(namePrefix + "replicaCount", Integer.toString(this.replicaCount));
 		props.put(namePrefix + "shutdownWaitInSeconds", Integer.toString(this.shutdownWaitInSeconds));
+		props.put(namePrefix + "esZipFile", this.esZipFile.resolvePath());
+		props.put(namePrefix + "localOutputPath", this.localOutputPath.resolvePath());		
+		props.put(namePrefix + "esVersionName", this.esVersionName);
 		return props;
 	}
 

@@ -27,29 +27,9 @@ public class Node implements SubstitutionSource {
 	private String name;
 	
 	/**
-	 * The remote host on which the node will be deployed.
-	 */
-	private String host;
-	
-	/**
-	 * The user to connect as on the remote host.
-	 */
-	private String user;
-	
-	/**
 	 * The directory where cluster management scripts reside.
 	 */
 	private FilePath scriptsPath;
-	
-	/**
-	 * The base ElasticSearch directory (where the binary package was extracted).
-	 */
-	private FilePath elasticSearchHome;
-	
-	/**
-	 * The JDK home directory.
-	 */
-	private FilePath javaHome;
 	
 	/**
 	 * The JVM heap size string. Provide a valid string (e.g. "512m", "2g")
@@ -140,34 +120,6 @@ public class Node implements SubstitutionSource {
 	}
 
 	/**
-	 * @return the host
-	 */
-	public String getHost() {
-		return host;
-	}
-
-	/**
-	 * @param host the host to set
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public String getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	/**
 	 * @return the scriptsPath
 	 */
 	public FilePath getScriptsPath() {
@@ -179,34 +131,6 @@ public class Node implements SubstitutionSource {
 	 */
 	public void setScriptsPath(FilePath scriptsPath) {
 		this.scriptsPath = scriptsPath;
-	}
-
-	/**
-	 * @return the elasticSearchHome
-	 */
-	public FilePath getElasticSearchHome() {
-		return elasticSearchHome;
-	}
-
-	/**
-	 * @param elasticSearchHome the elasticSearchHome to set
-	 */
-	public void setElasticSearchHome(FilePath elasticSearchHome) {
-		this.elasticSearchHome = elasticSearchHome;
-	}
-
-	/**
-	 * @return the javaHome
-	 */
-	public FilePath getJavaHome() {
-		return javaHome;
-	}
-
-	/**
-	 * @param javaHome the javaHome to set
-	 */
-	public void setJavaHome(FilePath javaHome) {
-		this.javaHome = javaHome;
 	}
 
 	/**
@@ -383,11 +307,7 @@ public class Node implements SubstitutionSource {
 		String namePrefix = Node.class.getSimpleName().toLowerCase() + ".";
 		props.put(namePrefix + "id", this.id);
 		props.put(namePrefix + "name", this.name);
-		props.put(namePrefix + "host", this.host);
-		props.put(namePrefix + "user", this.user);
 		props.put(namePrefix + "scriptsPath", this.scriptsPath.resolvePath());
-		props.put(namePrefix + "elasticSearchHome", this.elasticSearchHome.resolvePath());
-		props.put(namePrefix + "javaHome", this.javaHome.resolvePath());
 		props.put(namePrefix + "heapSize", this.heapSize);
 		props.put(namePrefix + "lockAllMemory", Boolean.toString(this.lockAllMemory));
 		props.put(namePrefix + "master", Boolean.toString(this.master));

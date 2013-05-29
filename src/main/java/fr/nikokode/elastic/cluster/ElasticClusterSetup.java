@@ -18,7 +18,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import fr.nikokode.commons.utils.FileUtils;
 import fr.nikokode.elastic.cluster.beans.Cluster;
-import fr.nikokode.elastic.cluster.beans.Deploy;
+import fr.nikokode.elastic.cluster.beans.Host;
 import fr.nikokode.elastic.cluster.beans.Node;
 
 /**
@@ -28,6 +28,8 @@ import fr.nikokode.elastic.cluster.beans.Node;
 public class ElasticClusterSetup {
 
 	private static final Logger LOGGER = Logger.getLogger(ElasticClusterSetup.class);
+	
+	private static final String RT_NODE_FOLDER = "runtime.nodeFolder";
 
 	/**
 	 * @param args
@@ -60,21 +62,16 @@ public class ElasticClusterSetup {
 			// Initialize variable substitution
 			VariableSubstitution varSub = new VariableSubstitution();
 			
-			Deploy deployDef = appCtx.getBean(Deploy.class);
+			Cluster cluster = appCtx.getBean(Cluster.class);
+			varSub.putProperties(cluster.getPropertyMap());
+			File outDir = new File(cluster.getLocalOutputPath().resolvePath());
+			
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Deployproperties: " + deployDef.getPropertyMap());
+				LOGGER.debug("Properties: " + varSub.toString());
 			}
-			varSub.putProperties(deployDef.getPropertyMap());
-			File outDir = new File(deployDef.getLocalOutputPath().resolvePath());
-
-			Cluster clusterDef = appCtx.getBean(Cluster.class);
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Cluster properties: " + clusterDef.getPropertyMap());
-			}
-			varSub.putProperties(clusterDef.getPropertyMap());
 
 			// Create cluster output folder
-			File clusterFolder = new File(outDir, clusterDef.getName());
+			File clusterFolder = new File(outDir, cluster.getName());
 			if (clusterFolder.exists()) {
 				LOGGER.info("Found existing output in " + clusterFolder.getAbsolutePath()
 						+ ", which will be deleted now.");
@@ -88,7 +85,7 @@ public class ElasticClusterSetup {
 
 			// Initialize main cluster management script
 			File clusterMgmtScriptFile = new File(
-					clusterFolder, "cluster_" + clusterDef.getName() + ".sh");
+					clusterFolder, "cluster_" + cluster.getName() + ".sh");
 			BufferedWriter clusterMgmtOut = new BufferedWriter(new FileWriter(clusterMgmtScriptFile));
 			clusterMgmtOut.write("#!/bin/bash");
 			clusterMgmtOut.newLine();
@@ -97,65 +94,94 @@ public class ElasticClusterSetup {
 
 			// Initialize main cluster deployment script
 			File clusterDeployScriptFile = 
-					new File(clusterFolder, "deploy_cluster_" + clusterDef.getName() + ".sh");
+					new File(clusterFolder, "deploy_cluster_" + cluster.getName() + ".sh");
 			BufferedWriter clusterDeployOut = new BufferedWriter(new FileWriter(clusterDeployScriptFile));
 			clusterDeployOut.write("#!/bin/bash");
 			clusterDeployOut.newLine();
 
 			try {
-				// Iterate on nodes
-				for (Node nodeDef : clusterDef.getNodes()) {
-					LOGGER.info("Found node definition '" + nodeDef.getId() 
-							+ "' '" + nodeDef.getName() + "' @ " + nodeDef.getHost());
+				// Iterate on hosts
+				for (Host host : cluster.getHosts()) {
+					String hostName = host.getName(); 
+					LOGGER.info("Found deployment host " + host.getUser() + "@" + hostName);
+					varSub.putProperties(host.getPropertyMap());
 					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Node properties: " + nodeDef.getPropertyMap());
+						LOGGER.debug("Properties: " + varSub.toString());
 					}
-
-					// Update variable substitution
-					Map<String, String> nodeProps = nodeDef.getPropertyMap();
-					varSub.putProperties(nodeProps);
-
-					String nodeId = nodeDef.getId();
-
-					// Create node folder
-					File nodeFolder = new File(clusterFolder, nodeId);
-					if (! nodeFolder.mkdirs()) {
+					
+					// Create host folder
+					File hostFolder = new File(clusterFolder, hostName);
+					if (! hostFolder.mkdirs()) {
 						throw new IOException("Failed to create directory hierarchy " 
-								+ nodeFolder.getAbsolutePath());
+								+ hostFolder.getAbsolutePath());
 					}
-
-					// Add property for node folder path
-					varSub.putProperty("deploy.nodeFolder", nodeFolder.getAbsolutePath());
-
-					// Create ElasticSearch config file
-					generateFromTemplate(Template.nodeConfig, nodeFolder, varSub);
-
-					// Create ElasticSearch logging config file
-					generateFromTemplate(Template.nodeLogConfig, nodeFolder, varSub);
-
-					// Create node management script
-					File nodeScript = generateFromTemplate(Template.nodeMgmtScript, nodeFolder, varSub);
-					nodeScript.setExecutable(true, true);
 					
-					// Append to cluster management script
-					String mgmtCmd = "ssh ${node.user}@${node.host} \"${node.scriptsPath}/"
-							+ nodeScript.getName() + " $1\"";
-					clusterMgmtOut.write(varSub.substitute(mgmtCmd));
-					clusterMgmtOut.newLine();
-
-					// Create node deployment script
-					File nodeDeployScript = 
-							generateFromTemplate(Template.nodeDeployScript, nodeFolder, varSub);
-					nodeDeployScript.setExecutable(true, true);
+					// Create host setup script
+					File setupHostScript = new File(hostFolder, "host_setup_" + hostName + ".sh");
+					generateFromTemplate(Template.setupHostScript, setupHostScript, varSub);
+					setupHostScript.setExecutable(true, true);
 					
-					// Append to cluster deployment script
-					clusterDeployOut.write(nodeDeployScript.getAbsolutePath());
+					// Add host setup to cluster deployment script
+					clusterDeployOut.write(setupHostScript.getAbsolutePath());
 					clusterDeployOut.newLine();
+					
+					// Iterate on nodes
+					for (Node node : host.getNodes()) {
+						LOGGER.info("Found node definition '" + node.getId() + "' '" + node.getName());
+						
+						// Update variable substitution
+						Map<String, String> nodeProps = node.getPropertyMap();
+						varSub.putProperties(nodeProps);
 
-					// Update variable substitution
-					varSub.removeProperties(nodeProps);
-				}	
+						String nodeId = node.getId();
 
+						// Create node folder
+						File nodeFolder = new File(hostFolder, nodeId);
+						if (! nodeFolder.mkdirs()) {
+							throw new IOException("Failed to create directory hierarchy " 
+									+ nodeFolder.getAbsolutePath());
+						}
+
+						// Add property for node folder path
+						varSub.putProperty(RT_NODE_FOLDER, nodeFolder.getAbsolutePath());
+						
+						if (LOGGER.isDebugEnabled()) {
+							LOGGER.debug("Properties: " + varSub.toString());
+						}
+
+						// Create ElasticSearch config file
+						generateFromTemplate(
+								Template.nodeConfig, 
+								new File(nodeFolder, "elasticsearch.yml"), 
+								varSub);
+
+						// Create ElasticSearch logging config file
+						generateFromTemplate(
+								Template.nodeLogConfig, 
+								new File(nodeFolder, "logging.yml"), 
+								varSub);
+
+						// Create node management script
+						File nodeScript = new File(nodeFolder, "node_" + nodeId + ".sh"); 
+						generateFromTemplate(Template.nodeMgmtScript, nodeScript, varSub);
+						nodeScript.setExecutable(true, true);
+						
+						// Append to cluster management script
+						String mgmtCmd = "ssh ${host.user}@${host.name} \"${node.scriptsPath}/"
+								+ nodeScript.getName() + " $1\"";
+						clusterMgmtOut.write(varSub.substitute(mgmtCmd));
+						clusterMgmtOut.newLine();
+
+						// Create node deployment script
+						File nodeDeployScript = new File(nodeFolder, "deploy_node_" + nodeId + ".sh");;
+						generateFromTemplate(Template.nodeDeployScript, nodeDeployScript, varSub);
+						nodeDeployScript.setExecutable(true, true);
+						
+						// Append to cluster deployment script
+						clusterDeployOut.write(nodeDeployScript.getAbsolutePath());
+						clusterDeployOut.newLine();
+					}
+				}
 			} finally {				
 				clusterDeployOut.close();
 				clusterDeployScriptFile.setExecutable(true, true);
@@ -172,7 +198,7 @@ public class ElasticClusterSetup {
 
 	}
 
-	private static File generateFromTemplate(
+	private static void generateFromTemplate(
 			Template template,
 			File outputFile,
 			VariableSubstitution varSub) throws IOException {
@@ -193,7 +219,6 @@ public class ElasticClusterSetup {
 			}
 
 			LOGGER.info("Generated " + outputFile.getAbsolutePath());
-			return outputFile;
 		} catch (IOException ioe) {
 			throw new IOException("Failed to generate " + outputFile.getAbsolutePath()
 					+ " from " + template.getRelativePath(), ioe);
