@@ -51,7 +51,7 @@ Next execute the JAR file as follows
 The following files will be generated in the 
 */home/obiwan/git/elastic-cluster/target* folder:
 
-    myCluster
+    imperial
      |
      |__ tatooine
      |    |
@@ -93,9 +93,9 @@ The following files will be generated in the
      |    |
      |    |__ host_setup_yavin.sh
      |
-     |__ cluster_myCluster.sh            
+     |__ cluster_imperial.sh            
      |
-     |__ deploy_cluster_myCluster.sh
+     |__ deploy_cluster_imperial.sh
  
  Scripts are generated as executable for the user.
  
@@ -106,14 +106,14 @@ Using the scripts
 -------------
 
 Still following on the same example, deploying the cluster to the remote
-hosts is performed by executing the *deploy_cluster_myCluster.sh* script. 
+hosts is performed by executing the *deploy_cluster_imperial.sh* script. 
 
 It will install (or freshen) the ElasticSearch installation on every host,
 copy configuration files and node management scripts (*node_xxx.sh* files)
 to the configured folders, through SSH.
 
 The cluster management script comes next, its name would be 
-*cluster_myCluster.sh*.
+*cluster_imperial.sh*.
 
 It takes one parameter among these:
 
