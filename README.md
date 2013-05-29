@@ -29,8 +29,7 @@ The build generates an executable JAR :
 Setting up a cluster configuration
 -------------
 
-The JAR file contains a [complete setup example](https://github.com/nicosensei/elastic-cluster/blob/master/src/main/resources/setups/example-beans.xml "example cluster setup")
-with plenty of comments, that will walk you through the tool configuration:
+The JAR file contains a [complete setup example](https://github.com/nicosensei/elastic-cluster/blob/master/src/main/resources/setups/example-beans.xml "example cluster setup") with plenty of comments, that will walk you through the tool configuration:
 
     src/main/resources/setups/example-beans.xml    
 
