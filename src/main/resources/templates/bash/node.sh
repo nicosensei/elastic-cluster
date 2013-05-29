@@ -46,7 +46,8 @@ status() {
 
 plugins() {
     if ${node.installHeadPlugin} ; then
-        $ES_HOME/bin/plugin -install mobz/elasticsearch-head -Des.path.conf=${node.confPath}
+        $ES_HOME/bin/plugin -install mobz/elasticsearch-head
+        mv $ES_HOME/plugins/head ${node.pluginsPath}
     fi    
 }
 
