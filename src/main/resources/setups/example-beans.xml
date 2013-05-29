@@ -72,76 +72,174 @@
 		<!-- The number of shards on a data node -->
 		<property name="shardCount" value="10" />
 		<!-- The number of replica across all data node, per data shard -->
-		<property name="replicaCount" value="2" />
+		<property name="replicaCount" value="1" />
 		<!-- The time, in seconds to wait after issuing a shutdown to a node -->
 		<property name="shutdownWaitInSeconds" value="10" />
+		<!-- The local folder to which the deploy tool will output the generated files. -->
 		<property name="localOutputPath">
 			<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
-				<property name="path" value="/home/ngiraud/git/elastic-cluster/target" />
+				<property name="path" value="/home/obiwan/git/elastic-cluster/target" />
 			</bean>
 		</property>
+		<!-- The local path to the ElasticSearch distribution zip -->
 		<property name="esZipFile">
 			<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 				<property name="path"
-					value="/media/data/warehouse/search/${es.version}.zip" />
+					value="/home/obiwan/zipballs/${es.version}.zip" />
 			</bean>
 		</property>
+		
+		<!--  
+		      A string identifying the ElasticSearch version. We expect the distro zip to be named
+		      elasticsearch-<version>.zip, and to contain a root folder elasticsearch-<version>.
+		      This value is used identify this ropot directory and be able to move the extracted files
+		      to the proper ES home directory.
+		 -->
 		<property name="esVersionName" value="${es.version}" />
 
+        <!-- 
+            The list of deployment hosts.
+            
+            An ElasticSearch deployment will be performed on every host.
+        -->
 		<property name="hosts">
 			<list>
 				<bean class="fr.nikokode.elastic.cluster.beans.Host">
-					<property name="name" value="menelas1.bnf.fr" />
-					<property name="user" value="dlweb" />
+				    <!--  The remote host name -->
+					<property name="name" value="tatooine" />
+					<!--  
+					   The remote host user. You should properly configure SSH identities
+					   on both your local machine and the host. 
+					-->
+					<property name="user" value="jedi" />
+					<!-- The ElasticSearch home directory on the host -->
 					<property name="elasticSearchHome" ref="esHome" />
+					<!-- The JDK installation path on the host. -->
 					<property name="javaHome" ref="javaHome" />
+					<!-- The temporary directory on the host (used only for dropping the ES zip) -->
 					<property name="tmpPath" ref="tmpDir" />
+					
+					<!--
+					   The list of ElasticSearch nodes to deploy on that host. 
+					   You may have several nodes on the same host if you desire so.
+					 -->
 					<property name="nodes">
 						<list>
-							<!-- Master coordinator node on menelas1 -->
+							<!-- Master coordinator node -->
 							<bean class="fr.nikokode.elastic.cluster.beans.Node">
+							    <!-- 
+							         A unique string identitying the node for the deployment.
+							         This token is used to generate unique file names.
+							         Use only alphanumeric characters and no whitespace. 
+							    -->
 								<property name="id" value="master" />
+								
+								<!-- 
+								    The node's display name. 
+								    ES generates funny names if you don't configure it yourself.
+								-->
 								<property name="name" value="Emperor Palpatine" />
+								
+								<!-- The directory on the host where node management scripts will reside. -->
 								<property name="scriptsPath" ref="scriptsDir" />
+								
+								<!-- The heap size to allocate to the virtual machine running the node -->
 								<property name="heapSize" value="512m" />
+								
+								<!--
+								    Excerpt from ES elasticsearch.yml template:
+								    # ElasticSearch performs poorly when JVM starts swapping: you should ensure that
+                                    # it _never_ swaps.
+									Set this property to true to lock the memory (it actually sets 
+									the bootstrap.mlockall ES configuration property.
+								 -->
 								<property name="lockAllMemory" value="true" />
+								
+								<!-- 
+								    Whether or not the node can be elected as master. It's possible to have 
+								    several master candidates, if you want to eliminate a SPOF.
+								-->
 								<property name="master" value="true" />
+								
+								<!--
+								    Whether or not the node stores data. 
+								 -->
 								<property name="data" value="false" />
+								
+								<!-- HTTP port used to issue REST commands to the node. -->
 								<property name="httpPort" value="9200" />
+								
+								<!-- TCP transport port for internal communication -->
 								<property name="tcpPort" value="9300" />
+								<!--  
+									Path on the host where ES configuration files for this node 
+									(elasticsearch.yml and logging.yml) are stored. 
+								-->
 								<property name="confPath">
 									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/conf" />
 									</bean>
 								</property>
+								
+								<!-- 
+								    Directory on this host where index data will be stored 
+								    (relevant for data nodes) 
+								-->
 								<property name="dataPath">
 									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/data" />
 									</bean>
 								</property>
+								
+								<!-- 
+                                    Directory on this host where ES will output work data.
+                                -->
 								<property name="workPath">
 									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/work" />
 									</bean>
 								</property>
+								
+								<!-- 
+                                    Directory on this host where node logs will be written.
+                                -->
 								<property name="logsPath">
 									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/logs" />
 									</bean>
 								</property>
+								
+								<!-- 
+                                    Directory on this host where the node's plugins will be installed.
+                                    Currently the tool only handles automatic installation of the head plugin.
+                                -->
 								<property name="pluginsPath">
 									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/plugins" />
 									</bean>
 								</property>
+								
+								<!-- 
+								    Set to true to enable the node's management script to perform 
+								    installation of the head plugin
+								-->
 								<property name="installHeadPlugin" value="true" />
 							</bean>
-							<!-- Load-balancer node on menelas1 -->
+							
+							<!-- 
+							     Further configuration is detailed to illustrate the available ES node 
+							     topology.
+							 -->
+							
+							<!-- 
+							     Load-balancer node : nor a master nor a data node, acts as a search load 
+							     balancer (fetching data from nodes, aggregating results, etc.).
+                            -->
 							<bean class="fr.nikokode.elastic.cluster.beans.Node">
 								<property name="id" value="loadBalancer" />
 								<property name="name" value="Darth Vader" />
@@ -150,6 +248,11 @@
 								<property name="lockAllMemory" value="true" />
 								<property name="master" value="false" />
 								<property name="data" value="false" />
+								
+								<!--
+								    When configuring several ES nodes on the same host, be sure to define
+								    distinct ports. 
+								 -->
 								<property name="httpPort" value="10200" />
 								<property name="tcpPort" value="10300" />
 								<property name="confPath">
@@ -188,13 +291,13 @@
 					</property>
 				</bean>
 				<bean class="fr.nikokode.elastic.cluster.beans.Host">
-					<property name="name" value="menelas2.bnf.fr" />
-					<property name="user" value="dlweb" />
+					<property name="name" value="hoth" />
+					<property name="user" value="jedi" />
 					<property name="elasticSearchHome" ref="esHome" />
 					<property name="javaHome" ref="javaHome" />
 					<property name="tmpPath" ref="tmpDir" />
 					<property name="nodes">
-						<!-- Data node on menelas2 (1 out of 2) -->
+						<!-- Data node (1 out of 2) -->
 						<bean class="fr.nikokode.elastic.cluster.beans.Node">
 							<property name="id" value="data1" />
 							<property name="name" value="Death Star" />
@@ -240,13 +343,13 @@
 					</property>
 				</bean>
 				<bean class="fr.nikokode.elastic.cluster.beans.Host">
-					<property name="name" value="menelas3.bnf.fr" />
-					<property name="user" value="dlweb" />
+					<property name="name" value="yavin" />
+					<property name="user" value="jedi" />
 					<property name="elasticSearchHome" ref="esHome" />
 					<property name="javaHome" ref="javaHome" />
 					<property name="tmpPath" ref="tmpDir" />
 					<property name="nodes">
-						<!-- Data node on menelas3 (2 out of 2) -->
+						<!-- Data node (2 out of 2) -->
 						<bean class="fr.nikokode.elastic.cluster.beans.Node">
 							<property name="id" value="data2" />
 							<property name="name" value="Tie Fighter" />
