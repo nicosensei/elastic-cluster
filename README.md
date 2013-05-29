@@ -46,8 +46,7 @@ to the root folder of your local Git repository:
 
 Next execute the JAR file as follows
 
-    obiwan@coruscant:~ java -jar  target/elastic-cluster-<version>-jar-with-dependencies.jar \
-    obiwan@coruscant:~ src/main/resources/setups/example-beans.xml
+    obiwan@coruscant:~ java -jar  target/elastic-cluster-<version>-jar-with-dependencies.jar src/main/resources/setups/example-beans.xml
 
 The following files will be generated in the 
 */home/obiwan/git/elastic-cluster/target* folder:
