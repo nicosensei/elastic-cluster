@@ -19,7 +19,7 @@ Let's start with an example, and please bear with the "Star Wars fanboy" tone of
 
     obiwan@coruscant:~ cd /home/obiwan/git/
     obiwan@coruscant:~ git clone https://github.com/nicosensei/elastic-cluster.git 
-    obiwan@coruscant:~ elastic-cluster
+    obiwan@coruscant:~ cd elastic-cluster
     obiwan@coruscant:~ mvn clean package
 
 The build generates an executable JAR : 
