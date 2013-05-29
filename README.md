@@ -32,7 +32,7 @@ Setting up a cluster configuration
 The JAR file contains a complete setup example with plenty of comments, 
 that will walk you through the tool configuration:
 
-    src/main/resources/setups/example-beans.xml
+    [src/main/resources/setups/example-beans.xml](https://github.com/nicosensei/elastic-cluster/blob/master/src/main/resources/setups/example-beans.xml "example cluster setup")    
 
 That's your starting point.
 
