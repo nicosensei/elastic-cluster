@@ -106,10 +106,10 @@ Using the scripts
 -------------
 
 Still following on the same example, deploying the cluster to the remote
-hosts is performed by executing the deploy_cluster_myCluster.sh script. 
+hosts is performed by executing the *deploy_cluster_myCluster.sh* script. 
 
 It will install (or freshen) the ElasticSearch installation on every host,
-copy configuration files and node management scripts (node_xxx.sh files)
+copy configuration files and node management scripts (*node_xxx.sh* files)
 to the configured folders, through SSH.
 
 The cluster management script comes next, its name would be 
