@@ -4,8 +4,8 @@ elastic-cluster
 Utility to deploy an ElasticSearch cluster (generates configs and 
 bash scripts). 
 
-This tool assumes you are running a Linux systems, as it generates Bash 
-scripts. It may be possible to run it on Windows using Cygwin, but this 
+This tool assumes you are running Linux systems on your local machine and
+remote host, as it generates Bash scripts. It may be possible to run it on Windows using Cygwin, but this 
 has not been tested.
 
 Building the tool
