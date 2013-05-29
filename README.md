@@ -17,8 +17,10 @@ root folder of your local Git repository.
 
 Let's start with an example :
 
-    cd /home/obiwan/git/elastic-cluster
-    mvn clean package
+    obiwan@coruscant:~ cd /home/obiwan/git/
+    obiwan@coruscant:~ git clone https://github.com/nicosensei/elastic-cluster.git 
+    obiwan@coruscant:~ elastic-cluster
+    obiwan@coruscant:~ mvn clean package
 
 The build generates an executable JAR : 
 
@@ -42,12 +44,12 @@ File generation
 Based on the above example configuration, open a terminal and navigate 
 to the root folder of your local Git repository:
 
-    cd /home/obiwan/git/elastic-cluster
+    obiwan@coruscant:~ cd /home/obiwan/git/elastic-cluster
 
 Next execute the JAR file as follows
 
-    java -jar  target/elastic-cluster-<version>-jar-with-dependencies.jar \
-    src/main/resources/setups/example-beans.xml
+    obiwan@coruscant:~ java -jar  target/elastic-cluster-<version>-jar-with-dependencies.jar \
+    obiwan@coruscant:~ src/main/resources/setups/example-beans.xml
 
 The following files will be generated in the 
 */home/obiwan/git/elastic-cluster/target* folder:
