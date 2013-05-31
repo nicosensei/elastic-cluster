@@ -13,7 +13,8 @@ public enum Template {
 	nodeLogConfig("templates/config/logging.yml"),
 	nodeMgmtScript("templates/bash/node.sh"),
 	nodeDeployScript("templates/bash/deployNode.sh"),
-	setupHostScript("templates/bash/setupHost.sh");
+	setupHostScript("templates/bash/setupHost.sh"),
+	clusterScript("templates/bash/cluster.sh");
 	
 	private final String relativePath;
 

@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
@@ -28,7 +30,7 @@ import fr.nikokode.elastic.cluster.beans.Node;
 public class ElasticClusterSetup {
 
 	private static final Logger LOGGER = Logger.getLogger(ElasticClusterSetup.class);
-	
+
 	private static final String RT_NODE_FOLDER = "runtime.nodeFolder";
 
 	/**
@@ -57,15 +59,15 @@ public class ElasticClusterSetup {
 		FileSystemXmlApplicationContext appCtx = 
 				new FileSystemXmlApplicationContext("file://" + setupFile.getAbsolutePath());
 		LOGGER.info("Loaded cluster setup beans from " + setupFile.getAbsolutePath());
-		
+
 		try {
 			// Initialize variable substitution
 			VariableSubstitution varSub = new VariableSubstitution();
-			
+
 			Cluster cluster = appCtx.getBean(Cluster.class);
 			varSub.putProperties(cluster.getPropertyMap());
 			File outDir = new File(cluster.getLocalOutputPath().resolvePath());
-			
+
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Properties: " + varSub.toString());
 			}
@@ -83,114 +85,123 @@ public class ElasticClusterSetup {
 			}
 			LOGGER.info("Cluster files will be stored in " + clusterFolder.getAbsolutePath());
 
-			// Initialize main cluster management script
+			// Initialize a map for cluster commands
+			Map<Integer, String> clusterCmds = new TreeMap<>();
+
+			// Initialize a list for cluster deployment commands
+			ArrayList<String> clusterDeployCmds = new ArrayList<>();
+
+			// Iterate on hosts
+			for (Host host : cluster.getHosts()) {
+				String hostName = host.getName(); 
+				LOGGER.info("Found deployment host " + host.getUser() + "@" + hostName);
+				varSub.putProperties(host.getPropertyMap());
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("Properties: " + varSub.toString());
+				}
+
+				// Create host folder
+				File hostFolder = new File(clusterFolder, hostName);
+				if (! hostFolder.mkdirs()) {
+					throw new IOException("Failed to create directory hierarchy " 
+							+ hostFolder.getAbsolutePath());
+				}
+
+				// Create host setup script
+				File setupHostScript = new File(hostFolder, "host_setup_" + hostName + ".sh");
+				generateFromTemplate(Template.setupHostScript, setupHostScript, varSub);
+				setupHostScript.setExecutable(true, true);
+
+				// Add host setup deployment command
+				clusterDeployCmds.add(setupHostScript.getAbsolutePath());
+
+				// Iterate on nodes
+				for (Node node : host.getNodes()) {
+					LOGGER.info("Found node definition '" + node.getId() + "' '" + node.getName());
+
+					// Update variable substitution
+					Map<String, String> nodeProps = node.getPropertyMap();
+					varSub.putProperties(nodeProps);
+
+					String nodeId = node.getId();
+
+					// Create node folder
+					File nodeFolder = new File(hostFolder, nodeId);
+					if (! nodeFolder.mkdirs()) {
+						throw new IOException("Failed to create directory hierarchy " 
+								+ nodeFolder.getAbsolutePath());
+					}
+
+					// Add property for node folder path
+					varSub.putProperty(RT_NODE_FOLDER, nodeFolder.getAbsolutePath());
+
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("Properties: " + varSub.toString());
+					}
+
+					// Create ElasticSearch config file
+					generateFromTemplate(
+							Template.nodeConfig, 
+							new File(nodeFolder, "elasticsearch.yml"), 
+							varSub);
+
+					// Create ElasticSearch logging config file
+					generateFromTemplate(
+							Template.nodeLogConfig, 
+							new File(nodeFolder, "logging.yml"), 
+							varSub);
+
+					// Create node management script
+					File nodeScript = new File(nodeFolder, "node_" + nodeId + ".sh"); 
+					generateFromTemplate(Template.nodeMgmtScript, nodeScript, varSub);
+					nodeScript.setExecutable(true, true);
+
+					// Append to cluster management script
+					clusterCmds.put(
+							node.getStartupOrder(), 
+							varSub.substitute("ssh ${host.user}@${host.name} \"${node.scriptsPath}/"
+									+ nodeScript.getName() + " \\$1\""));
+
+					// Create node deployment script
+					File nodeDeployScript = new File(nodeFolder, "deploy_node_" + nodeId + ".sh");;
+					generateFromTemplate(Template.nodeDeployScript, nodeDeployScript, varSub);
+					nodeDeployScript.setExecutable(true, true);
+
+					// Append to cluster deployment script
+					clusterDeployCmds.add(nodeDeployScript.getAbsolutePath());
+				}
+			}
+
+			// Write main cluster management script
+			Integer[] nodeOrder = clusterCmds.keySet().toArray(new Integer[clusterCmds.size()]);
+			StringBuffer sb = new StringBuffer();
+			for (int o = 0; o < nodeOrder.length; o++) {
+				sb.append(clusterCmds.get(nodeOrder[o]) + "\n");
+			}
+			varSub.putProperty("runtime.clusterOrderAscCommands", sb.toString());
+			
+			sb = new StringBuffer();
+			for (int o = nodeOrder.length - 1; o >= 0 ; o--) {
+				sb.append(clusterCmds.get(nodeOrder[o]) + "\n");
+			}
+			varSub.putProperty("runtime.clusterOrderDescCommands", sb.toString());
+			
 			File clusterMgmtScriptFile = new File(
 					clusterFolder, "cluster_" + cluster.getName() + ".sh");
-			BufferedWriter clusterMgmtOut = new BufferedWriter(new FileWriter(clusterMgmtScriptFile));
-			clusterMgmtOut.write("#!/bin/bash");
-			clusterMgmtOut.newLine();
-			clusterMgmtOut.write("# Usage: $0 {start|stop|restart|status|plugins|destroy}");
-			clusterMgmtOut.newLine();
+			generateFromTemplate(Template.clusterScript, clusterMgmtScriptFile, varSub);
+			clusterMgmtScriptFile.setExecutable(true, true);
+			LOGGER.info("Generated " + clusterMgmtScriptFile.getAbsolutePath());
 
-			// Initialize main cluster deployment script
+			// Write main cluster deployment script
 			File clusterDeployScriptFile = 
 					new File(clusterFolder, "deploy_cluster_" + cluster.getName() + ".sh");
 			BufferedWriter clusterDeployOut = new BufferedWriter(new FileWriter(clusterDeployScriptFile));
 			clusterDeployOut.write("#!/bin/bash");
 			clusterDeployOut.newLine();
-
-			try {
-				// Iterate on hosts
-				for (Host host : cluster.getHosts()) {
-					String hostName = host.getName(); 
-					LOGGER.info("Found deployment host " + host.getUser() + "@" + hostName);
-					varSub.putProperties(host.getPropertyMap());
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("Properties: " + varSub.toString());
-					}
-					
-					// Create host folder
-					File hostFolder = new File(clusterFolder, hostName);
-					if (! hostFolder.mkdirs()) {
-						throw new IOException("Failed to create directory hierarchy " 
-								+ hostFolder.getAbsolutePath());
-					}
-					
-					// Create host setup script
-					File setupHostScript = new File(hostFolder, "host_setup_" + hostName + ".sh");
-					generateFromTemplate(Template.setupHostScript, setupHostScript, varSub);
-					setupHostScript.setExecutable(true, true);
-					
-					// Add host setup to cluster deployment script
-					clusterDeployOut.write(setupHostScript.getAbsolutePath());
-					clusterDeployOut.newLine();
-					
-					// Iterate on nodes
-					for (Node node : host.getNodes()) {
-						LOGGER.info("Found node definition '" + node.getId() + "' '" + node.getName());
-						
-						// Update variable substitution
-						Map<String, String> nodeProps = node.getPropertyMap();
-						varSub.putProperties(nodeProps);
-
-						String nodeId = node.getId();
-
-						// Create node folder
-						File nodeFolder = new File(hostFolder, nodeId);
-						if (! nodeFolder.mkdirs()) {
-							throw new IOException("Failed to create directory hierarchy " 
-									+ nodeFolder.getAbsolutePath());
-						}
-
-						// Add property for node folder path
-						varSub.putProperty(RT_NODE_FOLDER, nodeFolder.getAbsolutePath());
-						
-						if (LOGGER.isDebugEnabled()) {
-							LOGGER.debug("Properties: " + varSub.toString());
-						}
-
-						// Create ElasticSearch config file
-						generateFromTemplate(
-								Template.nodeConfig, 
-								new File(nodeFolder, "elasticsearch.yml"), 
-								varSub);
-
-						// Create ElasticSearch logging config file
-						generateFromTemplate(
-								Template.nodeLogConfig, 
-								new File(nodeFolder, "logging.yml"), 
-								varSub);
-
-						// Create node management script
-						File nodeScript = new File(nodeFolder, "node_" + nodeId + ".sh"); 
-						generateFromTemplate(Template.nodeMgmtScript, nodeScript, varSub);
-						nodeScript.setExecutable(true, true);
-						
-						// Append to cluster management script
-						String mgmtCmd = "ssh ${host.user}@${host.name} \"${node.scriptsPath}/"
-								+ nodeScript.getName() + " $1\"";
-						clusterMgmtOut.write(varSub.substitute(mgmtCmd));
-						clusterMgmtOut.newLine();
-
-						// Create node deployment script
-						File nodeDeployScript = new File(nodeFolder, "deploy_node_" + nodeId + ".sh");;
-						generateFromTemplate(Template.nodeDeployScript, nodeDeployScript, varSub);
-						nodeDeployScript.setExecutable(true, true);
-						
-						// Append to cluster deployment script
-						clusterDeployOut.write(nodeDeployScript.getAbsolutePath());
-						clusterDeployOut.newLine();
-					}
-				}
-			} finally {				
-				clusterDeployOut.close();
-				clusterDeployScriptFile.setExecutable(true, true);
-				LOGGER.info("Generated " + clusterDeployScriptFile.getAbsolutePath());
-				
-				clusterMgmtScriptFile.setExecutable(true, true);
-				clusterMgmtOut.close();
-				LOGGER.info("Generated " + clusterMgmtScriptFile.getAbsolutePath());
-			}
+			
+			clusterDeployOut.close();
+			clusterDeployScriptFile.setExecutable(true, true);
+			LOGGER.info("Generated " + clusterDeployScriptFile.getAbsolutePath());			
 
 		} finally {
 			appCtx.close();

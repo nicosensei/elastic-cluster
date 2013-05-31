@@ -22,6 +22,12 @@ public class Node implements SubstitutionSource {
 	private String id;
 	
 	/**
+	 * In the cluster startup sequence, the order of this node. Shutdown is done in
+	 * reverse order. 
+	 */
+	private int startupOrder;
+	
+	/**
 	 * The node name.
 	 */
 	private String name;
@@ -301,11 +307,26 @@ public class Node implements SubstitutionSource {
 		this.installHeadPlugin = installHeadPlugin;
 	}
 
+	/**
+	 * @return the startupOrder
+	 */
+	public int getStartupOrder() {
+		return startupOrder;
+	}
+
+	/**
+	 * @param startupOrder the startupOrder to set
+	 */
+	public void setStartupOrder(int startupOrder) {
+		this.startupOrder = startupOrder;
+	}
+
 	@Override
 	public Map<String, String> getPropertyMap() {
 		HashMap<String, String> props = new HashMap<>();
 		String namePrefix = Node.class.getSimpleName().toLowerCase() + ".";
 		props.put(namePrefix + "id", this.id);
+		props.put(namePrefix + "startupOrder", Integer.toString(this.startupOrder));
 		props.put(namePrefix + "name", this.name);
 		props.put(namePrefix + "scriptsPath", this.scriptsPath.resolvePath());
 		props.put(namePrefix + "heapSize", this.heapSize);

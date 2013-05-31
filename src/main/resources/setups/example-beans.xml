@@ -134,6 +134,8 @@
 							    -->
 								<property name="id" value="master" />
 								
+								<property name="startupOrder" value="1" />
+								
 								<!-- 
 								    The node's display name. 
 								    ES generates funny names if you don't configure it yourself.
@@ -242,6 +244,7 @@
                             -->
 							<bean class="fr.nikokode.elastic.cluster.beans.Node">
 								<property name="id" value="loadBalancer" />
+								<property name="startupOrder" value="2" />
 								<property name="name" value="Darth Vader" />
 								<property name="scriptsPath" ref="scriptsDir" />
 								<property name="heapSize" value="1024m" />
@@ -300,6 +303,7 @@
 						<!-- Data node (1 out of 2) -->
 						<bean class="fr.nikokode.elastic.cluster.beans.Node">
 							<property name="id" value="data1" />
+							<property name="startupOrder" value="3" />
 							<property name="name" value="Death Star" />
 							<property name="scriptsPath" ref="scriptsDir" />
 							<property name="heapSize" value="1024m" />
@@ -352,6 +356,7 @@
 						<!-- Data node (2 out of 2) -->
 						<bean class="fr.nikokode.elastic.cluster.beans.Node">
 							<property name="id" value="data2" />
+							<property name="startupOrder" value="4" />
 							<property name="name" value="Tie Fighter" />
 							<property name="scriptsPath" ref="scriptsDir" />
 							<property name="heapSize" value="1024m" />

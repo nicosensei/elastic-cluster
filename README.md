@@ -118,18 +118,10 @@ It takes one parameter among these:
 
 - *start*: starts the cluster
 - *status*: shows if the cluster nodes are up
+- *stop* : stops the cluster (note that stop commands are issued in reverse order compared to start commands)
+- *restart* : stops the starts the cluster
 - *plugins*: installs the head plugin (if the node was defined as needing it)
-- *destroy*: should only be called AFTER the cluster has been shut down. 
-            Removes all files and folders for the cluster
-            
-Individual node scripts also handle *stop* and *restart* commands. Currently 
-the main script can also forward these commands, but since you should 
-always stop the master after all other nodes have been shut down, don't use
-it. This is a know defect in this version. A later version will provide a
-proper cluster shutdown script.
-
-The easiest and safest way to shut your cluster down is to do it from the *head*
-site of your ES cluster (it would make sense to deploy it on the master node(s)).
+- *destroy*: shuts down the cluster  and removes all files and folders for the cluster
 
 Finally...
 -------------
