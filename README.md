@@ -5,7 +5,7 @@ Utility to deploy an ElasticSearch cluster (generates configs and
 bash scripts). 
 
 This tool assumes you are running Linux systems on your local machine and
-remote host, as it generates Bash scripts. It may be possible to run it on Windows using Cygwin, but this 
+remote hosts, as it generates Bash scripts. It may be possible to run it on Windows using Cygwin, but this 
 has not been tested.
 
 Building the tool
@@ -108,7 +108,7 @@ Still following on the same example, deploying the cluster to the remote
 hosts is performed by executing the *deploy_cluster_imperial.sh* script. 
 
 It will install (or freshen) the ElasticSearch installation on every host,
-copy configuration files and node management scripts (*node_xxx.sh* files)
+copy configuration files and node management scripts, e.g. *node_xxx.sh* files,
 to the configured folders, through SSH.
 
 The cluster management script comes next, its name would be 
