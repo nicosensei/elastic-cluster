@@ -17,6 +17,7 @@ node.data: ${node.data}
 
 index.number_of_shards: ${cluster.shardCount}
 index.number_of_replicas: ${cluster.replicaCount}
+index.cache.field.type: ${cluster.cacheFieldType}
 
 #################################### Paths ####################################
 

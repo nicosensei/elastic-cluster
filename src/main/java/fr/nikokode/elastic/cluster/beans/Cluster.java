@@ -33,6 +33,15 @@ public class Cluster implements SubstitutionSource {
 	private int replicaCount;
 	
 	/**
+	 * @see http://architects.dzone.com/articles/our-experience-creating-large
+	 * When using ElasticSearch, you will see OutOfMemory errors frequently. This error occurs when 
+	 * the field cache exceeds the maximum heap size. If you change the setting for 
+	 * index.cache.field.type from resident (default) to soft, soft reference 
+	 * will be used and the cache area will be preferentially GC, and this problem can be resolved.
+	 */
+	private String cacheFieldType;
+	
+	/**
 	 * The time to wait for process completion after issuing a shutdown request to a node.
 	 */
     private int shutdownWaitInSeconds;
@@ -169,6 +178,14 @@ public class Cluster implements SubstitutionSource {
 		this.hosts = hosts;
 	}
 
+	public String getCacheFieldType() {
+		return cacheFieldType;
+	}
+
+	public void setCacheFieldType(String cacheFieldType) {
+		this.cacheFieldType = cacheFieldType;
+	}
+
 	@Override
 	public Map<String, String> getPropertyMap() {
 		HashMap<String, String> props = new HashMap<>();
@@ -176,6 +193,7 @@ public class Cluster implements SubstitutionSource {
 		props.put(namePrefix + "name", this.name);
 		props.put(namePrefix + "shardCount", Integer.toString(this.shardCount));
 		props.put(namePrefix + "replicaCount", Integer.toString(this.replicaCount));
+		props.put(namePrefix + "cacheFieldType", this.cacheFieldType);
 		props.put(namePrefix + "shutdownWaitInSeconds", Integer.toString(this.shutdownWaitInSeconds));
 		props.put(namePrefix + "esZipFile", this.esZipFile.resolvePath());
 		props.put(namePrefix + "localOutputPath", this.localOutputPath.resolvePath());		

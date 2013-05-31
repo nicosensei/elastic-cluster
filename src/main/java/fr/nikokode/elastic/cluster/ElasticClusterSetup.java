@@ -198,7 +198,10 @@ public class ElasticClusterSetup {
 			BufferedWriter clusterDeployOut = new BufferedWriter(new FileWriter(clusterDeployScriptFile));
 			clusterDeployOut.write("#!/bin/bash");
 			clusterDeployOut.newLine();
-			
+			for (String cmd : clusterDeployCmds) {
+				clusterDeployOut.write(cmd);
+				clusterDeployOut.newLine();
+			}			
 			clusterDeployOut.close();
 			clusterDeployScriptFile.setExecutable(true, true);
 			LOGGER.info("Generated " + clusterDeployScriptFile.getAbsolutePath());			

@@ -73,6 +73,8 @@
 		<property name="shardCount" value="10" />
 		<!-- The number of replica across all data node, per data shard -->
 		<property name="replicaCount" value="1" />
+		<!-- The cache field type (resident (default), soft... -->
+		<property name="cacheFieldType" value="soft" />
 		<!-- The time, in seconds to wait after issuing a shutdown to a node -->
 		<property name="shutdownWaitInSeconds" value="10" />
 		<!-- The local folder to which the deploy tool will output the generated files. -->
