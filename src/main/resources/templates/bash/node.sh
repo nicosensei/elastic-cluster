@@ -46,6 +46,10 @@ status() {
 
 plugins() {
     if ${node.installHeadPlugin} ; then
+        if [ -d ${node.pluginsPath}/head ]; 
+	  then rm -rf ${node.pluginsPath}/head
+          $ES_HOME/bin/plugin -remove head 
+        fi
         $ES_HOME/bin/plugin -install mobz/elasticsearch-head
         mv $ES_HOME/plugins/head ${node.pluginsPath}
     fi    
