@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import fr.nikokode.commons.utils.FileUtils;
 import fr.nikokode.elastic.cluster.beans.Cluster;
 import fr.nikokode.elastic.cluster.beans.Host;
 import fr.nikokode.elastic.cluster.beans.Node;
+import fr.nikokode.elastic.cluster.beans.Plugin;
 
 /**
  * @author ngiraud
@@ -32,6 +35,8 @@ public class ElasticClusterSetup {
 	private static final Logger LOGGER = Logger.getLogger(ElasticClusterSetup.class);
 
 	private static final String RT_NODE_FOLDER = "runtime.nodeFolder";
+	
+	private static final String RT_PLUGINS_CMD = "runtime.pluginCommands";
 
 	/**
 	 * @param args
@@ -134,6 +139,30 @@ public class ElasticClusterSetup {
 
 					// Add property for node folder path
 					varSub.putProperty(RT_NODE_FOLDER, nodeFolder.getAbsolutePath());
+					
+					// Generate plugin commands
+					StringWriter pluginSw = new StringWriter();
+					PrintWriter pw = new PrintWriter(pluginSw);
+					for (Plugin plug : node.getPlugins()) {
+						String name = plug.getName();
+						pw.println(
+								"if [ -d ${node.pluginsPath}/" + name + " ];");
+						pw.println(
+								"then rm -rf ${node.pluginsPath}/" + name);
+						pw.println(
+								"${host.elasticSearchHome}/bin/plugin -remove " 
+										+ name);
+						pw.println("fi");
+						pw.println(
+								"${host.elasticSearchHome}/bin/plugin -install " 
+										+ plug.getId());
+						pw.println("mv ${host.elasticSearchHome}/plugins/"
+								+ name + " ${node.pluginsPath}");
+					}
+					pw.close();
+					varSub.putProperty(
+							RT_PLUGINS_CMD, 
+							varSub.substitute(pluginSw.toString()));
 
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug("Properties: " + varSub.toString());

@@ -229,10 +229,25 @@
 								</property>
 								
 								<!-- 
-								    Set to true to enable the node's management script to perform 
-								    installation of the head plugin
+								    The plugins to install. Define plugin names as they should be sent to the 
+								    ES plugins command line tool.
 								-->
-								<property name="installHeadPlugin" value="true" />
+								<property name="plugins">
+								    <set>
+								        <bean class="fr.nikokode.elastic.cluster.beans.Plugin">
+								            <property name="name" value="head" />
+								            <property name="id" value="mobz/elasticsearch-head" />
+								        </bean>
+								        <bean class="fr.nikokode.elastic.cluster.beans.Plugin">
+								            <property name="name" value="paramedic" />
+                                            <property name="id" value="karmi/elasticsearch-paramedic" />
+                                        </bean>
+                                        <bean class="fr.nikokode.elastic.cluster.beans.Plugin">
+                                            <property name="name" value="bigdesk" />
+                                            <property name="id" value="lukas-vlcek/bigdesk" />
+                                        </bean>
+								    </set>
+								</property>
 							</bean>
 							
 							<!-- 
@@ -290,7 +305,6 @@
 										<property name="path" value="loadBalancer/plugins" />
 									</bean>
 								</property>
-								<property name="installHeadPlugin" value="false" />
 							</bean>
 						</list>
 					</property>
@@ -344,7 +358,6 @@
 									<property name="path" value="data1/plugins" />
 								</bean>
 							</property>
-							<property name="installHeadPlugin" value="false" />
 						</bean>
 					</property>
 				</bean>
@@ -397,7 +410,6 @@
 									<property name="path" value="data2/plugins" />
 								</bean>
 							</property>
-							<property name="installHeadPlugin" value="false" />
 						</bean>
 					</property>
 				</bean>

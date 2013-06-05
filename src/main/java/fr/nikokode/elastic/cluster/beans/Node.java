@@ -5,6 +5,7 @@ package fr.nikokode.elastic.cluster.beans;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import fr.nikokode.elastic.cluster.SubstitutionSource;
 
@@ -93,9 +94,10 @@ public class Node implements SubstitutionSource {
 	private FilePath pluginsPath;
 	
 	/**
-	 * If set to true, will generate head plugin installation command
+	 * The plugins to install.
 	 */
-	private boolean installHeadPlugin;
+	private Set<Plugin> plugins;
+	
 
 	/**
 	 * @return the id
@@ -294,17 +296,17 @@ public class Node implements SubstitutionSource {
 	}
 
 	/**
-	 * @return the installHeadPlugin
+	 * @return the plugins
 	 */
-	public boolean isInstallHeadPlugin() {
-		return installHeadPlugin;
+	public Set<Plugin> getPlugins() {
+		return plugins;
 	}
 
 	/**
-	 * @param installHeadPlugin the installHeadPlugin to set
+	 * @param plugins the plugins to set
 	 */
-	public void setInstallHeadPlugin(boolean installHeadPlugin) {
-		this.installHeadPlugin = installHeadPlugin;
+	public void setPlugins(Set<Plugin> plugins) {
+		this.plugins = plugins;
 	}
 
 	/**
@@ -340,7 +342,6 @@ public class Node implements SubstitutionSource {
 		props.put(namePrefix + "workPath", this.workPath.resolvePath());
 		props.put(namePrefix + "logsPath", this.logsPath.resolvePath());
 		props.put(namePrefix + "pluginsPath", this.pluginsPath.resolvePath());
-		props.put(namePrefix + "installHeadPlugin", Boolean.toString(this.installHeadPlugin));
 		return props;
 	}
 	

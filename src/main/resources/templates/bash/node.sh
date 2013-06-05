@@ -2,8 +2,6 @@
 
 PID_FILE="${node.scriptsPath}/${node.id}.pid"
 
-ES_HOME="${host.elasticSearchHome}"
-
 export JAVA_HOME="${host.javaHome}"
 #export ES_CLASSPATH=""
 export ES_HEAP_SIZE="${node.heapSize}"
@@ -15,7 +13,7 @@ start() {
     if [  -f $PID_FILE  ]; then
 		echo -e "ElasticSearch is already running: pid `cat $PID_FILE`"
     else
-		$ES_HOME/bin/elasticsearch -p $PID_FILE
+		${host.elasticSearchHome}/bin/elasticsearch -p $PID_FILE
 		echo -e "Started ElasticSearch: pid `cat $PID_FILE`"
 	fi
     return 1
@@ -45,14 +43,7 @@ status() {
 }
 
 plugins() {
-    if ${node.installHeadPlugin} ; then
-        if [ -d ${node.pluginsPath}/head ]; 
-	  then rm -rf ${node.pluginsPath}/head
-          $ES_HOME/bin/plugin -remove head 
-        fi
-        $ES_HOME/bin/plugin -install mobz/elasticsearch-head
-        mv $ES_HOME/plugins/head ${node.pluginsPath}
-    fi    
+    ${runtime.pluginCommands}
 }
 
 destroy() {
