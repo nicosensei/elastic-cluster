@@ -4,6 +4,7 @@
 package fr.nikokode.elastic.cluster.beans;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -299,7 +300,7 @@ public class Node implements SubstitutionSource {
 	 * @return the plugins
 	 */
 	public Set<Plugin> getPlugins() {
-		return plugins;
+		return (plugins != null ? plugins : new HashSet<Plugin>());
 	}
 
 	/**

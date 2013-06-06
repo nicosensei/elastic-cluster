@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -141,28 +142,31 @@ public class ElasticClusterSetup {
 					varSub.putProperty(RT_NODE_FOLDER, nodeFolder.getAbsolutePath());
 					
 					// Generate plugin commands
-					StringWriter pluginSw = new StringWriter();
-					PrintWriter pw = new PrintWriter(pluginSw);
-					for (Plugin plug : node.getPlugins()) {
-						String name = plug.getName();
-						pw.println(
-								"if [ -d ${node.pluginsPath}/" + name + " ];");
-						pw.println(
-								"then rm -rf ${node.pluginsPath}/" + name);
-						pw.println(
-								"${host.elasticSearchHome}/bin/plugin -remove " 
-										+ name);
-						pw.println("fi");
-						pw.println(
-								"${host.elasticSearchHome}/bin/plugin -install " 
-										+ plug.getId());
-						pw.println("mv ${host.elasticSearchHome}/plugins/"
-								+ name + " ${node.pluginsPath}");
+					String pluginCommands = "echo No plugin to install.";
+					Set<Plugin> plugs = node.getPlugins();
+					if (! plugs.isEmpty()) {
+						StringWriter pluginSw = new StringWriter();
+						PrintWriter pw = new PrintWriter(pluginSw);
+						for (Plugin plug : node.getPlugins()) {
+							String name = plug.getName();
+							pw.println(
+									"if [ -d ${node.pluginsPath}/" + name + " ];");
+							pw.println(
+									"then rm -rf ${node.pluginsPath}/" + name);
+							pw.println(
+									"${host.elasticSearchHome}/bin/plugin -remove " 
+											+ name);
+							pw.println("fi");
+							pw.println(
+									"${host.elasticSearchHome}/bin/plugin -install " 
+											+ plug.getId());
+							pw.println("mv ${host.elasticSearchHome}/plugins/"
+									+ name + " ${node.pluginsPath}");
+						}
+						pw.close();
+						pluginCommands = varSub.substitute(pluginSw.toString());
 					}
-					pw.close();
-					varSub.putProperty(
-							RT_PLUGINS_CMD, 
-							varSub.substitute(pluginSw.toString()));
+					varSub.putProperty(RT_PLUGINS_CMD, pluginCommands);
 
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug("Properties: " + varSub.toString());
