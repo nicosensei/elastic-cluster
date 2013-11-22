@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.nikokode.elastic.cluster;
+package com.github.nicosensei.elastic.cluster;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,11 +21,11 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import fr.nikokode.commons.utils.FileUtils;
-import fr.nikokode.elastic.cluster.beans.Cluster;
-import fr.nikokode.elastic.cluster.beans.Host;
-import fr.nikokode.elastic.cluster.beans.Node;
-import fr.nikokode.elastic.cluster.beans.Plugin;
+import com.github.nicosensei.commons.utils.FileUtils;
+import com.github.nicosensei.elastic.cluster.beans.Cluster;
+import com.github.nicosensei.elastic.cluster.beans.Host;
+import com.github.nicosensei.elastic.cluster.beans.Node;
+import com.github.nicosensei.elastic.cluster.beans.Plugin;
 
 /**
  * @author ngiraud

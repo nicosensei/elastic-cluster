@@ -4,4 +4,4 @@
  * @author ngiraud
  *
  */
-package fr.nikokode.elastic.cluster.beans;
+package com.github.nicosensei.elastic.cluster.beans;

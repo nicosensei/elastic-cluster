@@ -1,13 +1,13 @@
 /**
  * 
  */
-package fr.nikokode.elastic.cluster.beans;
+package com.github.nicosensei.elastic.cluster.beans;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.nikokode.elastic.cluster.SubstitutionSource;
+import com.github.nicosensei.elastic.cluster.SubstitutionSource;
 
 /**
  * @author ngiraud

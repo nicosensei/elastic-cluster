@@ -16,7 +16,7 @@
     <appender-ref ref="console" />
   </category>
 
-  <category name="fr.nikokode" additivity="false">
+  <category name="com.github.nicosensei" additivity="false">
     <priority value="info" />
     <appender-ref ref="console" />
   </category>

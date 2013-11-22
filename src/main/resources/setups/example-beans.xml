@@ -34,12 +34,12 @@
         We assume that all our servers have the same directory layout so we define a couple of
         global paths that will be reused below. 
     -->
-	<bean id="bnfDataRoot" class="fr.nikokode.elastic.cluster.beans.FilePath">
+	<bean id="bnfDataRoot" class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 		<property name="path" value="/data/elasticsearch" />
 	</bean>
 
     <!-- This is the directory where node management scripts will reside. -->
-	<bean id="scriptsDir" class="fr.nikokode.elastic.cluster.beans.FilePath">
+	<bean id="scriptsDir" class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 		<property name="path" value="/home/obiwan/elasticsearch/imperial" />
 	</bean>
 
@@ -47,17 +47,17 @@
         This is the directory where we will put temporary files during deployment.
         As of now it's only the ES distribution zip file. 
     -->
-	<bean id="tmpDir" class="fr.nikokode.elastic.cluster.beans.FilePath">
+	<bean id="tmpDir" class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 		<property name="path" value="/tmp" />
 	</bean>
 
     <!--  Path to the JDK -->
-	<bean id="javaHome" class="fr.nikokode.elastic.cluster.beans.FilePath">
+	<bean id="javaHome" class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 		<property name="path" value="/usr/lib/jvm/jdk1.7.0_21" />
 	</bean>
 
     <!-- The desired home directory for ElasticSearch -->
-	<bean id="esHome" class="fr.nikokode.elastic.cluster.beans.FilePath">
+	<bean id="esHome" class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 		<property name="path" value="/home/obiwan/elasticsearch/${es.version}" />
 	</bean>
 
@@ -66,7 +66,7 @@
 	   
 	   The deployment descriptor must contain exactly one cluster bean.
 	 -->
-	<bean class="fr.nikokode.elastic.cluster.beans.Cluster">
+	<bean class="com.github.nicosensei.elastic.cluster.beans.Cluster">
 	    <!--  The cluster name -->
 		<property name="name" value="imperial" />
 		<!-- The number of shards on a data node -->
@@ -79,13 +79,13 @@
 		<property name="shutdownWaitInSeconds" value="10" />
 		<!-- The local folder to which the deploy tool will output the generated files. -->
 		<property name="localOutputPath">
-			<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+			<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 				<property name="path" value="/home/obiwan/git/elastic-cluster/target" />
 			</bean>
 		</property>
 		<!-- The local path to the ElasticSearch distribution zip -->
 		<property name="esZipFile">
-			<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+			<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 				<property name="path"
 					value="/home/obiwan/zipballs/${es.version}.zip" />
 			</bean>
@@ -106,7 +106,7 @@
         -->
 		<property name="hosts">
 			<list>
-				<bean class="fr.nikokode.elastic.cluster.beans.Host">
+				<bean class="com.github.nicosensei.elastic.cluster.beans.Host">
 				    <!--  The remote host name -->
 					<property name="name" value="tatooine" />
 					<!--  
@@ -128,7 +128,7 @@
 					<property name="nodes">
 						<list>
 							<!-- Master coordinator node -->
-							<bean class="fr.nikokode.elastic.cluster.beans.Node">
+							<bean class="com.github.nicosensei.elastic.cluster.beans.Node">
 							    <!-- 
 							         A unique string identitying the node for the deployment.
 							         This token is used to generate unique file names.
@@ -180,7 +180,7 @@
 									(elasticsearch.yml and logging.yml) are stored. 
 								-->
 								<property name="confPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/conf" />
 									</bean>
@@ -191,7 +191,7 @@
 								    (relevant for data nodes) 
 								-->
 								<property name="dataPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/data" />
 									</bean>
@@ -201,7 +201,7 @@
                                     Directory on this host where ES will output work data.
                                 -->
 								<property name="workPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/work" />
 									</bean>
@@ -211,7 +211,7 @@
                                     Directory on this host where node logs will be written.
                                 -->
 								<property name="logsPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/logs" />
 									</bean>
@@ -222,7 +222,7 @@
                                     Currently the tool only handles automatic installation of the head plugin.
                                 -->
 								<property name="pluginsPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="master/plugins" />
 									</bean>
@@ -234,15 +234,15 @@
 								-->
 								<property name="plugins">
 								    <set>
-								        <bean class="fr.nikokode.elastic.cluster.beans.Plugin">
+								        <bean class="com.github.nicosensei.elastic.cluster.beans.Plugin">
 								            <property name="name" value="head" />
 								            <property name="id" value="mobz/elasticsearch-head" />
 								        </bean>
-								        <bean class="fr.nikokode.elastic.cluster.beans.Plugin">
+								        <bean class="com.github.nicosensei.elastic.cluster.beans.Plugin">
 								            <property name="name" value="paramedic" />
                                             <property name="id" value="karmi/elasticsearch-paramedic" />
                                         </bean>
-                                        <bean class="fr.nikokode.elastic.cluster.beans.Plugin">
+                                        <bean class="com.github.nicosensei.elastic.cluster.beans.Plugin">
                                             <property name="name" value="bigdesk" />
                                             <property name="id" value="lukas-vlcek/bigdesk" />
                                         </bean>
@@ -259,7 +259,7 @@
 							     Load-balancer node : nor a master nor a data node, acts as a search load 
 							     balancer (fetching data from nodes, aggregating results, etc.).
                             -->
-							<bean class="fr.nikokode.elastic.cluster.beans.Node">
+							<bean class="com.github.nicosensei.elastic.cluster.beans.Node">
 								<property name="id" value="loadBalancer" />
 								<property name="startupOrder" value="2" />
 								<property name="name" value="Darth Vader" />
@@ -276,31 +276,31 @@
 								<property name="httpPort" value="10200" />
 								<property name="tcpPort" value="10300" />
 								<property name="confPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="loadBalancer/conf" />
 									</bean>
 								</property>
 								<property name="dataPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="loadBalancer/data" />
 									</bean>
 								</property>
 								<property name="workPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="loadBalancer/work" />
 									</bean>
 								</property>
 								<property name="logsPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="loadBalancer/logs" />
 									</bean>
 								</property>
 								<property name="pluginsPath">
-									<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+									<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 										<property name="root" ref="bnfDataRoot" />
 										<property name="path" value="loadBalancer/plugins" />
 									</bean>
@@ -309,7 +309,7 @@
 						</list>
 					</property>
 				</bean>
-				<bean class="fr.nikokode.elastic.cluster.beans.Host">
+				<bean class="com.github.nicosensei.elastic.cluster.beans.Host">
 					<property name="name" value="hoth" />
 					<property name="user" value="jedi" />
 					<property name="elasticSearchHome" ref="esHome" />
@@ -317,7 +317,7 @@
 					<property name="tmpPath" ref="tmpDir" />
 					<property name="nodes">
 						<!-- Data node (1 out of 2) -->
-						<bean class="fr.nikokode.elastic.cluster.beans.Node">
+						<bean class="com.github.nicosensei.elastic.cluster.beans.Node">
 							<property name="id" value="data1" />
 							<property name="startupOrder" value="3" />
 							<property name="name" value="Death Star" />
@@ -329,31 +329,31 @@
 							<property name="httpPort" value="9200" />
 							<property name="tcpPort" value="9300" />
 							<property name="confPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data1/conf" />
 								</bean>
 							</property>
 							<property name="dataPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data1/data" />
 								</bean>
 							</property>
 							<property name="workPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data1/work" />
 								</bean>
 							</property>
 							<property name="logsPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data1/logs" />
 								</bean>
 							</property>
 							<property name="pluginsPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data1/plugins" />
 								</bean>
@@ -361,7 +361,7 @@
 						</bean>
 					</property>
 				</bean>
-				<bean class="fr.nikokode.elastic.cluster.beans.Host">
+				<bean class="com.github.nicosensei.elastic.cluster.beans.Host">
 					<property name="name" value="yavin" />
 					<property name="user" value="jedi" />
 					<property name="elasticSearchHome" ref="esHome" />
@@ -369,7 +369,7 @@
 					<property name="tmpPath" ref="tmpDir" />
 					<property name="nodes">
 						<!-- Data node (2 out of 2) -->
-						<bean class="fr.nikokode.elastic.cluster.beans.Node">
+						<bean class="com.github.nicosensei.elastic.cluster.beans.Node">
 							<property name="id" value="data2" />
 							<property name="startupOrder" value="4" />
 							<property name="name" value="Tie Fighter" />
@@ -381,31 +381,31 @@
 							<property name="httpPort" value="9200" />
 							<property name="tcpPort" value="9300" />
 							<property name="confPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data2/conf" />
 								</bean>
 							</property>
 							<property name="dataPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data2/data" />
 								</bean>
 							</property>
 							<property name="workPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data2/work" />
 								</bean>
 							</property>
 							<property name="logsPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data2/logs" />
 								</bean>
 							</property>
 							<property name="pluginsPath">
-								<bean class="fr.nikokode.elastic.cluster.beans.FilePath">
+								<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
 									<property name="root" ref="bnfDataRoot" />
 									<property name="path" value="data2/plugins" />
 								</bean>

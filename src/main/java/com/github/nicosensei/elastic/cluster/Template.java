@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.nikokode.elastic.cluster;
+package com.github.nicosensei.elastic.cluster;
 
 /**
  * @author ngiraud

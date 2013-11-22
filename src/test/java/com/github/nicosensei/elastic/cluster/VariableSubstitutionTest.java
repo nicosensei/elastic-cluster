@@ -1,8 +1,10 @@
-package fr.nikokode.elastic.cluster;
+package com.github.nicosensei.elastic.cluster;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
+
+import com.github.nicosensei.elastic.cluster.VariableSubstitution;
 
 public class VariableSubstitutionTest extends TestCase {
 

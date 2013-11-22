@@ -1,7 +1,9 @@
-package fr.nikokode.elastic.cluster.beans;
+package com.github.nicosensei.elastic.cluster.beans;
 
 
 import org.junit.Test;
+
+import com.github.nicosensei.elastic.cluster.beans.FilePath;
 
 import junit.framework.TestCase;
 

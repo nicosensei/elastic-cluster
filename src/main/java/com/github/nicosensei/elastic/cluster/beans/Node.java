@@ -1,14 +1,14 @@
 /**
  * 
  */
-package fr.nikokode.elastic.cluster.beans;
+package com.github.nicosensei.elastic.cluster.beans;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import fr.nikokode.elastic.cluster.SubstitutionSource;
+import com.github.nicosensei.elastic.cluster.SubstitutionSource;
 
 /**
  * A Spring bean representing an ElasticSearch node setup.

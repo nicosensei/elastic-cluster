@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>fr.nikokode</groupId>
-		<artifactId>maven-master</artifactId>
+		<groupId>com.github.nicosensei</groupId>
+		<artifactId>master-java7</artifactId>
 		<version>1.0.0</version>
 	</parent>
 
@@ -17,9 +17,14 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>fr.nikokode</groupId>
-			<artifactId>commons</artifactId>
-			<version>1.2.2</version>
+			<groupId>com.github.nicosensei</groupId>
+			<artifactId>commons-util</artifactId>
+			<version>1.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.nicosensei</groupId>
+			<artifactId>commons-cmd</artifactId>
+			<version>1.5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -77,7 +82,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>fr.nikokode.elastic.cluster.ElasticClusterSetup</mainClass>
+							<mainClass>com.github.nicosensei.elastic.cluster.ElasticClusterSetup</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
