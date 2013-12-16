@@ -14,6 +14,8 @@ start() {
 		echo -e "ElasticSearch is already running: pid `cat $PID_FILE`"
     else
 		${host.elasticSearchHome}/bin/elasticsearch -p $PID_FILE
+		echo -e "\nWaiting for ElasticSearch to start..."
+		sleep ${cluster.startupWaitInSeconds}
 		echo -e "Started ElasticSearch: pid `cat $PID_FILE`"
 	fi
     return 1

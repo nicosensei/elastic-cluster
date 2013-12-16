@@ -47,6 +47,11 @@ public class Cluster implements SubstitutionSource {
     private int shutdownWaitInSeconds;
     
     /**
+	 * The time to wait after starting a node.
+	 */
+    private int startupWaitInSeconds;
+    
+    /**
 	 * Path to the local output folder
 	 */
 	private FilePath localOutputPath;
@@ -123,6 +128,20 @@ public class Cluster implements SubstitutionSource {
 	}
 
 	/**
+	 * @return the startupWaitInSeconds
+	 */
+	public final int getStartupWaitInSeconds() {
+		return startupWaitInSeconds;
+	}
+
+	/**
+	 * @param startupWaitInSeconds the startupWaitInSeconds to set
+	 */
+	public final void setStartupWaitInSeconds(int startupWaitInSeconds) {
+		this.startupWaitInSeconds = startupWaitInSeconds;
+	}
+
+	/**
 	 * @return the localOutputPath
 	 */
 	public FilePath getLocalOutputPath() {
@@ -195,6 +214,7 @@ public class Cluster implements SubstitutionSource {
 		props.put(namePrefix + "replicaCount", Integer.toString(this.replicaCount));
 		props.put(namePrefix + "cacheFieldType", this.cacheFieldType);
 		props.put(namePrefix + "shutdownWaitInSeconds", Integer.toString(this.shutdownWaitInSeconds));
+		props.put(namePrefix + "startupWaitInSeconds", Integer.toString(this.startupWaitInSeconds));
 		props.put(namePrefix + "esZipFile", this.esZipFile.resolvePath());
 		props.put(namePrefix + "localOutputPath", this.localOutputPath.resolvePath());		
 		props.put(namePrefix + "esVersionName", this.esVersionName);

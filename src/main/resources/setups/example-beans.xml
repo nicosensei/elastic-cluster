@@ -77,6 +77,8 @@
 		<property name="cacheFieldType" value="soft" />
 		<!-- The time, in seconds to wait after issuing a shutdown to a node -->
 		<property name="shutdownWaitInSeconds" value="10" />
+		<!-- The time, in seconds to wait after starting a node -->
+        <property name="startupWaitInSeconds" value="2" />
 		<!-- The local folder to which the deploy tool will output the generated files. -->
 		<property name="localOutputPath">
 			<bean class="com.github.nicosensei.elastic.cluster.beans.FilePath">
