@@ -4,8 +4,10 @@
 package com.github.nicosensei.elastic.cluster.beans;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.nicosensei.elastic.cluster.SubstitutionSource;
 
@@ -70,6 +72,17 @@ public class Cluster implements SubstitutionSource {
 	 * The deployment hosts.
 	 */
 	private List<Host> hosts;
+	
+	/**
+	 * By default discovery uses multicast
+	 */
+	private boolean multicastEnabled = true;
+	
+	/**
+	 * If {@link #multicastEnabled} is set to false, use this property to define 
+	 * a list of master hosts (host:port)
+	 */
+	private Set<String> unicastMasterHosts = new LinkedHashSet<>();
     
     /**
 	 * @return the name
@@ -205,6 +218,22 @@ public class Cluster implements SubstitutionSource {
 		this.cacheFieldType = cacheFieldType;
 	}
 
+	public boolean isMulticastEnabled() {
+		return multicastEnabled;
+	}
+
+	public void setMulticastEnabled(boolean multicastEnabled) {
+		this.multicastEnabled = multicastEnabled;
+	}
+
+	public Set<String> getUnicastMasterHosts() {
+		return unicastMasterHosts;
+	}
+
+	public void setUnicastMasterHosts(Set<String> unicastMasterHosts) {
+		this.unicastMasterHosts = unicastMasterHosts;
+	}
+
 	@Override
 	public Map<String, String> getPropertyMap() {
 		HashMap<String, String> props = new HashMap<>();
@@ -218,6 +247,17 @@ public class Cluster implements SubstitutionSource {
 		props.put(namePrefix + "esZipFile", this.esZipFile.resolvePath());
 		props.put(namePrefix + "localOutputPath", this.localOutputPath.resolvePath());		
 		props.put(namePrefix + "esVersionName", this.esVersionName);
+		props.put(namePrefix + "multicastEnabled", Boolean.toString(this.multicastEnabled));
+		String masterHosts = "";
+		if (!this.multicastEnabled && !this.unicastMasterHosts.isEmpty()) {
+			StringBuffer sb = new StringBuffer();
+			for (String mh : this.unicastMasterHosts) {
+				sb.append("\"" + mh + "\", ");
+			}
+			masterHosts = masterHosts.substring(0, masterHosts.lastIndexOf(","));
+		}
+		props.put(namePrefix + "unicastMasterHosts", "[" + masterHosts + "]");
+		
 		return props;
 	}
 

@@ -100,6 +100,14 @@
 		      to the proper ES home directory.
 		 -->
 		<property name="esVersionName" value="${es.version}" />
+	
+		<property name="multicastEnabled" value="false" />
+		<property name="unicastMasterHosts">
+           		<set>
+				<value>tattooine:9300</value>
+		
+			</set>
+		</property>
 
         <!-- 
             The list of deployment hosts.

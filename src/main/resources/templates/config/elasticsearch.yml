@@ -48,6 +48,11 @@ bootstrap.mlockall: ${node.lockAllMemory}
 transport.tcp.port: ${node.tcpPort}
 http.port: ${node.httpPort}
 
+################################## Discovery ##################################
+
+discovery.zen.ping.multicast.enabled: ${cluster.multicastEnabled}
+discovery.zen.ping.unicast.hosts: ${cluster.unicastMasterHosts}
+
 ################################## Slow Log ##################################
 
 # Shard level query and fetch threshold logging.
