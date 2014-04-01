@@ -254,7 +254,8 @@ public class Cluster implements SubstitutionSource {
 			for (String mh : this.unicastMasterHosts) {
 				sb.append("\"" + mh + "\", ");
 			}
-			masterHosts = masterHosts.substring(0, masterHosts.lastIndexOf(","));
+			int lastColon = masterHosts.lastIndexOf(",");
+			masterHosts = lastColon > 0 ? masterHosts.substring(0, lastColon) : masterHosts;
 		}
 		props.put(namePrefix + "unicastMasterHosts", "[" + masterHosts + "]");
 		
